@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xml>
+<odoo>  
+
+    <record id="view_dreamsoft_configuracion_periodo_reserva_form" model="ir.ui.view">
+        <field name="name">hotel_dreamsoft_configuracion_periodo_reserva_form</field>
+        <field name="model">dreamsoft.configuracion.periodo_reserva</field>
+        <field name="arch" type="xml">
+            <form string="Configuracion horario">
+                <label string="Hora entrada" name="hora_entrada"/>
+                <field name="hora_entrada" widget="float_time"/>
+                <label string="Hora salida" name="hora_salida"/>
+                <field name="hora_salida" widget="float_time"/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree view of hotel room amenities type -->
+    <record id="view_dreamsoft_configuracion_periodo_reserva_tree" model="ir.ui.view">
+        <field name="name">hotel_dreamsoft_configuracion_periodo_reserva_tree</field>
+        <field name="model">dreamsoft.configuracion.periodo_reserva</field>
+        <field name="arch" type="xml">
+            <tree string="Configuracion horario">
+                <field name="hora_entrada"/>
+                <field name="hora_salida"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="dreamsoft_configuracion_periodo_reserva" model="ir.actions.act_window">
+        <field name="name">Configuracion horario</field>
+        <field name="res_model">dreamsoft.configuracion.periodo_reserva</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Configuracion horario" id="menu_open_view_hotel_periodo_reserva"
+        action="dreamsoft_configuracion_periodo_reserva"
+        parent="hotel.hotel_configuration_menu" />
+
+</odoo>
