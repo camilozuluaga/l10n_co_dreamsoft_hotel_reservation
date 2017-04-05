@@ -39,43 +39,49 @@ class configuracion_reserva_periodo(models.Model):
 	hora_salida = fields.Char('Hora Checkout', size=5, default='00:00')
 
 
-	@api.constrains('hora_entrada')
-	def chequear_hora_entrada(self):
+
+	def verificar_horas(self, hora):
 		'''
 		metodo que se usa para identificar si la hora de entrada es correcta
 		es correcta si es hasta el numero 23 empezando desde las 00 hasta las
 		23 que serian horas y al igual que los minutos.
 		-------------------------------------------------------------------
 		@param self: object pointer
+		@param hora: el valor del campo modificado
 		@return: raise warning depending on the validation
 		'''
-		cadena = str(self.hora_entrada).strip()
+		cadena = str(hora).strip()
 		if cadena:
-			dos_primeros = cadena[0:2]
 			dos_puntos = cadena[2:3]
+
+			_logger.info(((not cadena[0:2].isdigit()) or (not cadena[3:5].isdigit())))
+
 
 			if dos_puntos != ':':
 				if cadena[1:2] != ':':
 					raise ValidationError(_('La hora debe de tener dos puntos para separar horas y minutos'))
+				else:
+					cadena = '0'+cadena
 
-			elif len(dos_primeros) < 2:
-				dos_primeros = '0'+dos_primeros[0:1]
+			if (not cadena[0:2].isdigit() or not cadena[3:5].isdigit()):
+				raise ValidationError(_('La hora no debe contener letras ni caracteres'))
 
-			elif len(cadena[0:2]) > 2:
+			if len(cadena[0:2]) > 2:
 				raise ValidationError(_('La hora debe ser entre las 00 y las 23'))
 
-			elif int(cadena[0:2]) >= 0:
+			if int(cadena[0:2]) >= 0:
 				if int(cadena[0:2]) > 23:
 					raise ValidationError(_('La hora debe ser entre las 00 y las 23'))
-			
-			elif int(cadena[0:2]) < 0:
-				raise ValidationError(_('La hora debe ser mayor a las 00'))
 
-			else:
-				_logger.info(int(cadena[3:5]))	
+			if int(cadena[3:5]) >= 0:
 				if int(cadena[3:5]) >= 0:
-					
 					if int(cadena[3:5]) > 59:
 						raise ValidationError(_('Los minutos deben de estar entre 00 y 59'))
 				else:
 					raise ValidationError(_('Los minutos deben de ser mayor a 0 '))
+
+	@api.constrains('hora_entrada', 'hora_salida')
+	def chequear_hora(self):
+		self.verificar_horas(self.hora_entrada)
+		self.verificar_horas(self.hora_salida)
+

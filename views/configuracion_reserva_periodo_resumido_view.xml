@@ -7,6 +7,12 @@
         <field name="model">dreamsoft.configuracion.periodo_reserva</field>
         <field name="arch" type="xml">
             <form string="Configuracion horario">
+                <div name="div_mensaje" class="oe_form_box_info oe_text_center">
+                    <b> 
+                        <span class="oe_e">
+                        </span>Apreciado Usuario el formato de la hora es militar (00:00 a 23:59)
+                    </b>
+                </div>
                 <group colspan="4" col="6">
                     <field name="hora_entrada"/>
                     <field name="hora_salida"/>
