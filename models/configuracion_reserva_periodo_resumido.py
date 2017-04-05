@@ -35,5 +35,47 @@ class configuracion_reserva_periodo(models.Model):
 
 	_name = 'dreamsoft.configuracion.periodo_reserva'
 
-	hora_entrada = fields.Float('Hora Entrada')
-	hora_salida = fields.Float('Hora Salida')
+	hora_entrada = fields.Char('Hora Checkin', size=5, default='00:00')
+	hora_salida = fields.Char('Hora Checkout', size=5, default='00:00')
+
+
+	@api.constrains('hora_entrada')
+	def chequear_hora_entrada(self):
+		'''
+		metodo que se usa para identificar si la hora de entrada es correcta
+		es correcta si es hasta el numero 23 empezando desde las 00 hasta las
+		23 que serian horas y al igual que los minutos.
+		-------------------------------------------------------------------
+		@param self: object pointer
+		@return: raise warning depending on the validation
+		'''
+		cadena = str(self.hora_entrada).strip()
+		if cadena:
+			dos_primeros = cadena[0:2]
+			dos_puntos = cadena[2:3]
+
+			if dos_puntos != ':':
+				if cadena[1:2] != ':':
+					raise ValidationError(_('La hora debe de tener dos puntos para separar horas y minutos'))
+
+			elif len(dos_primeros) < 2:
+				dos_primeros = '0'+dos_primeros[0:1]
+
+			elif len(cadena[0:2]) > 2:
+				raise ValidationError(_('La hora debe ser entre las 00 y las 23'))
+
+			elif int(cadena[0:2]) >= 0:
+				if int(cadena[0:2]) > 23:
+					raise ValidationError(_('La hora debe ser entre las 00 y las 23'))
+			
+			elif int(cadena[0:2]) < 0:
+				raise ValidationError(_('La hora debe ser mayor a las 00'))
+
+			else:
+				_logger.info(int(cadena[3:5]))	
+				if int(cadena[3:5]) >= 0:
+					
+					if int(cadena[3:5]) > 59:
+						raise ValidationError(_('Los minutos deben de estar entre 00 y 59'))
+				else:
+					raise ValidationError(_('Los minutos deben de ser mayor a 0 '))

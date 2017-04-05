@@ -7,10 +7,10 @@
         <field name="model">dreamsoft.configuracion.periodo_reserva</field>
         <field name="arch" type="xml">
             <form string="Configuracion horario">
-                <label string="Hora entrada" name="hora_entrada"/>
-                <field name="hora_entrada" widget="float_time"/>
-                <label string="Hora salida" name="hora_salida"/>
-                <field name="hora_salida" widget="float_time"/>
+                <group colspan="4" col="6">
+                    <field name="hora_entrada"/>
+                    <field name="hora_salida"/>
+                </group>
             </form>
         </field>
     </record>
