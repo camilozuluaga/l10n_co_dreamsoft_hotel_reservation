@@ -25,7 +25,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import urllib2
 from odoo.exceptions import except_orm, ValidationError
-from odoo.tools import misc, DEFAULT_SERVER_DATE_FORMAT
+from odoo.tools import misc, DEFAULT_SERVER_DATE_FORMAT,DEFAULT_SERVER_DATETIME_FORMAT
 from odoo import models, fields, api, _
 from odoo import workflow
 from decimal import Decimal
@@ -46,8 +46,12 @@ class room_reservation_summary_inherit(models.Model):
 
 	def consultar_registro_horario(self):
 		confi_horario_id = self.env['dreamsoft.configuracion.periodo_reserva'].search([]).id
+		horarios_confi = []
 		if confi_horario_id:
-			return confi_horario_id
+			for horarios in self.env['dreamsoft.configuracion.periodo_reserva'].browse(confi_horario_id):
+				horarios_confi.append(horarios.hora_entrada)
+				horarios_confi.append(horarios.hora_salida)
+			return horarios_confi
 		return None
 
 
@@ -59,23 +63,15 @@ class room_reservation_summary_inherit(models.Model):
 		@param self: object pointer
 		@return: raise warning depending on the validation
 		'''
-
-		hora_inicio = ''
-		hora_fin = ''
-		confi_horario_id = self.consultar_registro_horario()
-
-		if confi_horario_id:
+		fecha_desde = self.fecha_desde +' '+ self.consultar_registro_horario()[0]+':00'
+		self.date_from = fecha_desde
 			
-			for horarios in self.env['dreamsoft.configuracion.periodo_reserva'].browse(confi_horario_id):
-				
-				hora_inicio = horarios.hora_entrada
-				hora_fin = horarios.hora_salida
-
-			self.date_from = self.fecha_desde +' '+ hora_inicio+':00'
-
+	@api.onchange('fecha_hasta')
+	def on_change_fecha_hasta(self):
+		fecha_hasta = self.fecha_hasta +' '+ self.consultar_registro_horario()[1]+':00'
+		_logger.info(fecha_hasta)
+		self.date_to = fecha_hasta
 			
-
-
 
 
 	@api.model
