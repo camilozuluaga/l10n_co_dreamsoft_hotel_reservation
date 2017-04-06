@@ -35,10 +35,42 @@ class configuracion_reserva_periodo(models.Model):
 
 	_name = 'dreamsoft.configuracion.periodo_reserva'
 
+	_rec_name = 'hora_entrada'
+
 	hora_entrada = fields.Char('Hora Checkin', size=5, default='00:00')
 	hora_salida = fields.Char('Hora Checkout', size=5, default='00:00')
 
 
+	@api.multi
+	def name_get(self):
+		''' 
+			con este metodo lo que hacemos es sobreescribir el name_get para 
+			que salga de una mejor manera al momento de crear un registro
+		'''
+		res = []
+		for rec in self:
+			nombre = 'Horario '+self.hora_entrada+' - '+self.hora_salida
+			res.append((rec.id, nombre))
+		return res
+
+
+	@api.model
+	def create(self, vals, check=True):
+		"""
+		sobreescribimos el metodo create para que los 
+		usuarios no puedan sino crear un solo registro 
+		para la configuracion de los horarios.
+		
+		@param self: The object pointer
+		@param vals: dictionary of fields value.
+		@return: new record set for hotel folio.
+		"""
+		registros_creados = self.search([])
+		
+		if  registros_creados:
+			raise ValidationError(_('Ya hay un registro creado, Editelo'))
+
+		return  super(configuracion_reserva_periodo, self).create(vals)
 
 	def verificar_horas(self, hora):
 		'''
@@ -53,9 +85,6 @@ class configuracion_reserva_periodo(models.Model):
 		cadena = str(hora).strip()
 		if cadena:
 			dos_puntos = cadena[2:3]
-
-			_logger.info(((not cadena[0:2].isdigit()) or (not cadena[3:5].isdigit())))
-
 
 			if dos_puntos != ':':
 				if cadena[1:2] != ':':
@@ -79,6 +108,7 @@ class configuracion_reserva_periodo(models.Model):
 						raise ValidationError(_('Los minutos deben de estar entre 00 y 59'))
 				else:
 					raise ValidationError(_('Los minutos deben de ser mayor a 0 '))
+
 
 	@api.constrains('hora_entrada', 'hora_salida')
 	def chequear_hora(self):
