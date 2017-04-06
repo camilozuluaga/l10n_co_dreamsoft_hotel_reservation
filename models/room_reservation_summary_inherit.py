@@ -52,17 +52,13 @@ class room_reservation_summary_inherit(models.Model):
 				horarios_confi.append(horarios.hora_entrada)
 				horarios_confi.append(horarios.hora_salida)
 			return horarios_confi
-		return None
+		horarios_confi.append('00:00')
+		horarios_confi.append('00:00')
+		return horarios_confi
 
 
 	@api.onchange('fecha_desde')
 	def on_change_fecha_desde(self):
-		'''
-		When you change checkout or checkin update dummy field
-		-----------------------------------------------------------
-		@param self: object pointer
-		@return: raise warning depending on the validation
-		'''
 		fecha_desde = self.fecha_desde +' '+ self.consultar_registro_horario()[0]+':00'
 		self.date_from = fecha_desde
 			
