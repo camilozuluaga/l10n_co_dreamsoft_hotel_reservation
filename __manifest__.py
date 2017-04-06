@@ -13,6 +13,7 @@
     'depends': ['hotel_reservation'],
     'data': [
         'views/configuracion_reserva_periodo_resumido_view.xml',
+        'views/room_reservation_summary_view.xml',
     ],
     'qweb': [],
     'installable': True,

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+  <data>
+
+    <!-- Inherit view hotel restaurant reservation form-->
+    <record model="ir.ui.view" id="view_hotel_product_product">
+      <field name="model">room.reservation.summary</field>
+      <field name="inherit_id" ref="hotel_reservation.room_reservation_summary_form_view"/>
+      <field name="arch" type="xml">
+
+          <field name="date_from" position="attributes">
+            <attribute name="invisible">1</attribute>
+          </field>
+
+          <field name="date_to" position="attributes">
+            <attribute name="invisible">1</attribute>
+          </field>
+
+
+          <field name="date_from" position="after">
+            <group col="4" colspan="6">
+              <field name="fecha_desde" class="oe_inline"/>
+               <field name="fecha_hasta" class="oe_inline"/>
+            </group>
+          </field>
+
+
+
+
+
+      </field>
+    </record>
+
+  </data>
+</odoo>

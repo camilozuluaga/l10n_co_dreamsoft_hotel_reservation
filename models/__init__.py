@@ -1,1 +1,2 @@
 import configuracion_reserva_periodo_resumido
+import room_reservation_summary_inherit

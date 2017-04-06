@@ -37,8 +37,8 @@ class configuracion_reserva_periodo(models.Model):
 
 	_rec_name = 'hora_entrada'
 
-	hora_entrada = fields.Char('Hora Checkin', size=5, default='00:00')
-	hora_salida = fields.Char('Hora Checkout', size=5, default='00:00')
+	hora_entrada = fields.Char('Hora Checkin', size=5, default='00:00', required=True)
+	hora_salida = fields.Char('Hora Checkout', size=5, default='00:00', required=True)
 
 
 	@api.multi
