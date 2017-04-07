@@ -42,7 +42,33 @@ class quick_room_reservation_inherit(models.TransientModel):
 	fecha_entrada = fields.Date('Fecha Entrada', required=True)
 	fecha_salida = fields.Date('Fecha Salida', required=True)
 
+
+
 	@api.onchange('fecha_entrada')
-	def on_change_fecha_desde(self):
-		self.check_in = '2017-05-03 11:00:00'
-		self.check_in = '2017-05-05 11:00:00'
+	def on_change_fecha_entrada(self):
+		dt_value = datetime.datetime.strptime(self.fecha_entrada, '%Y-%M-%d') + datetime.timedelta(days=1)
+		self.fecha_salida = dt_value
+		self.check_in = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00'
+
+	@api.onchange('fecha_salida')
+	def on_change_fecha_salida(self):
+		if self.fecha_salida:
+			self.check_out = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00'
+
+
+	@api.model
+	def default_get(self, fields):
+		"""
+		To get default values for the object.
+		@param self: The object pointer.
+		@param fields: List of fields for which we want default values
+		@return: A dictionary which of fields with values.
+		"""
+		if self._context is None:
+			self._context = {}
+		res = super(quick_room_reservation_inherit, self).default_get(fields)
+		if self._context:
+			keys = self._context.keys()
+			if 'date' in keys:
+				res.update({'fecha_entrada': self._context['date'][0:10]})
+		return res
