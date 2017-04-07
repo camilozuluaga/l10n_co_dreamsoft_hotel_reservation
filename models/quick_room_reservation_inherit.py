@@ -46,14 +46,14 @@ class quick_room_reservation_inherit(models.TransientModel):
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
-		dt_value = datetime.datetime.strptime(self.fecha_entrada, '%Y-%M-%d') + datetime.timedelta(days=1)
+		dt_value = datetime.datetime.strptime(self.fecha_entrada, DEFAULT_SERVER_DATE_FORMAT) + datetime.timedelta(days=1)
 		self.fecha_salida = dt_value
 		self.check_in = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00'
 
 	@api.onchange('fecha_salida')
 	def on_change_fecha_salida(self):
 		if self.fecha_salida:
-			self.check_out = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00'
+			self.check_out = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
 
 
 	@api.model
@@ -72,3 +72,16 @@ class quick_room_reservation_inherit(models.TransientModel):
 			if 'date' in keys:
 				res.update({'fecha_entrada': self._context['date'][0:10]})
 		return res
+
+
+	@api.multi
+	def room_reserve(self):
+		"""
+		This method create a new record for hotel.reservation
+		-----------------------------------------------------
+		@param self: The object pointer
+		@return: new record set for hotel reservation.
+		"""
+		res = super(quick_room_reservation_inherit, self).room_reserve()
+
+		res.write({'fecha_entrada': self.fecha_entrada, 'fecha_salida': self.fecha_salida})
