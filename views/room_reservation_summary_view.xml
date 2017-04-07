@@ -3,7 +3,7 @@
   <data>
 
     <!-- Inherit view hotel restaurant reservation form-->
-    <record model="ir.ui.view" id="view_hotel_product_product">
+    <record model="ir.ui.view" id="view_reservation_summary_form">
       <field name="model">room.reservation.summary</field>
       <field name="inherit_id" ref="hotel_reservation.room_reservation_summary_form_view"/>
       <field name="arch" type="xml">

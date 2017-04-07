@@ -14,6 +14,7 @@
     'data': [
         'views/configuracion_reserva_periodo_resumido_view.xml',
         'views/room_reservation_summary_view.xml',
+        'views/quick_room_reservation_view.xml',
     ],
     'qweb': [],
     'installable': True,

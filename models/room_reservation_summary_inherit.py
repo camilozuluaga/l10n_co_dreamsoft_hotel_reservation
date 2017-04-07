@@ -34,7 +34,7 @@ _logger = logging.getLogger(__name__)
 
 class room_reservation_summary_inherit(models.Model):
 
-	name = 'room.reservation.summary'
+	_name = 'room.reservation.summary'
 
 	_inherit = 'room.reservation.summary'
 
