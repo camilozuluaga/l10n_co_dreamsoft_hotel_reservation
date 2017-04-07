@@ -24,6 +24,10 @@
             </group>
           </field>
 
+          <xpath expr="//label[@for='date_from']" position="attributes">
+            <attribute name="invisible">1</attribute>
+          </xpath>
+
 
 
 
