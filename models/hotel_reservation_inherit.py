@@ -43,9 +43,27 @@ class hotel_reservation_inherit(models.Model):
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
-		self.checkin = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00'
+		fecha_hoy = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+		if self.fecha_entrada:
+			self.checkin = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00'
+
+			if self.checkin < fecha_hoy:
+				raise except_orm(_('Warning'), _('Fecha de Check In \
+					No puede ser menor a la fecha de hoy.'))
+
 
 	@api.onchange('fecha_salida')
 	def on_change_fecha_salida(self):
+
+		fecha_hoy = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
 		if self.fecha_salida:
 			self.checkout = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
+
+			if self.checkout < fecha_hoy:
+				raise except_orm(_('Warning'), _('Fecha de Check Out \
+					No puede ser menor a la fecha de hoy.'))
+
+			if self.checkout and self.checkin:
+				if self.checkout < self.checkin:
+					raise except_orm(_('Warning'), _('Checkout date \
+							should be greater than Checkin date.'))
