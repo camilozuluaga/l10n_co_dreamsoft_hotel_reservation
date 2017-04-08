@@ -60,12 +60,12 @@ class room_reservation_summary_inherit(models.Model):
 	@api.onchange('fecha_desde')
 	def on_change_fecha_desde(self):
 		fecha_desde = self.fecha_desde +' '+ self.consultar_registro_horario()[0]+':00'
-		self.date_from = self.env['hotel.hotel'].fecha_UTC(fecha_desde)
+		self.date_from = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_desde)
 			
 	@api.onchange('fecha_hasta')
 	def on_change_fecha_hasta(self):
 		fecha_hasta = self.fecha_hasta +' '+ self.consultar_registro_horario()[1]+':00'
-		self.date_to = self.env['hotel.hotel'].fecha_UTC(fecha_hasta)
+		self.date_to = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_hasta)
 			
 
 
