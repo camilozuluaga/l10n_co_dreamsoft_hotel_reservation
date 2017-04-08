@@ -19,7 +19,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 #
 # ---------------------------------------------------------------------------
-
+import pytz
 import time
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -47,13 +47,16 @@ class quick_room_reservation_inherit(models.TransientModel):
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
 		dt_value = datetime.datetime.strptime(self.fecha_entrada, DEFAULT_SERVER_DATE_FORMAT) + datetime.timedelta(days=1)
-		self.fecha_salida = dt_value
-		self.check_in = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00'
+		self.fecha_salida = self.env['hotel.hotel'].fecha_UTC(str(dt_value))
+
+		fecha_entrada = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00'
+		self.check_in = self.env['hotel.hotel'].fecha_UTC(fecha_entrada)
 
 	@api.onchange('fecha_salida')
 	def on_change_fecha_salida(self):
 		if self.fecha_salida:
-			self.check_out = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
+			fecha_salida = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
+			self.check_out = self.env['hotel.hotel'].fecha_UTC(fecha_salida)
 
 
 	@api.model
@@ -85,3 +88,5 @@ class quick_room_reservation_inherit(models.TransientModel):
 		res = super(quick_room_reservation_inherit, self).room_reserve()
 
 		res.write({'fecha_entrada': self.fecha_entrada, 'fecha_salida': self.fecha_salida})
+
+

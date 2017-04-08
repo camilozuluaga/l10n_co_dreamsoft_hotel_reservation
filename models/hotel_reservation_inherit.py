@@ -45,7 +45,8 @@ class hotel_reservation_inherit(models.Model):
 	def on_change_fecha_entrada(self):
 		fecha_hoy = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
 		if self.fecha_entrada:
-			self.checkin = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00'
+			fecha_entrada = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00' 
+			self.checkin = self.env['hotel.hotel'].fecha_UTC(fecha_entrada)
 
 			if self.checkin < fecha_hoy:
 				raise except_orm(_('Warning'), _('Fecha de Check In \
@@ -57,7 +58,8 @@ class hotel_reservation_inherit(models.Model):
 
 		fecha_hoy = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
 		if self.fecha_salida:
-			self.checkout = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
+			fecha_salida = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
+			self.checkout = self.env['hotel.hotel'].fecha_UTC(fecha_salida)
 
 			if self.checkout < fecha_hoy:
 				raise except_orm(_('Warning'), _('Fecha de Check Out \
