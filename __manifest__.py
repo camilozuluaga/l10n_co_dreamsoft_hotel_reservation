@@ -10,7 +10,7 @@
     'summary': 'Colombia Reservacion: Extended hotel_reservation'
                'Contact Module - Odoo 10.0',
     'images': [],
-    'depends': ['hotel_reservation'],
+    'depends': ['l10n_co_dreamsoft_hotel', 'hotel_reservation'],
     'data': [
         'views/configuracion_reserva_periodo_resumido_view.xml',
         'views/room_reservation_summary_view.xml',
