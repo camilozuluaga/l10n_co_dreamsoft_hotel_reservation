@@ -16,6 +16,7 @@
         'views/room_reservation_summary_view.xml',
         'views/quick_room_reservation_view.xml',
         'views/hotel_reservation_view.xml',
+        'data/data_tareas_programadas.xml',
     ],
     'qweb': [],
     'installable': True,

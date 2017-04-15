@@ -19,8 +19,17 @@
           <xpath expr="//field[@name='adults']" position="before">
             <field name="fecha_entrada" class="oe_inline"/>
           </xpath>
+
           <xpath expr="//field[@name='adults']" position="before">
             <field name="fecha_salida" class="oe_inline"/>
+          </xpath>
+
+          <xpath expr="//button[@name='done']" position="after">
+            <field name="arriban_hoy" invisible="1"/>
+          </xpath>
+
+          <xpath expr="//button[@name='done']" position="attributes">
+            <attribute name="attrs">{'invisible': [('arriban_hoy', '=', False)]}</attribute>
           </xpath>
 
       </field>

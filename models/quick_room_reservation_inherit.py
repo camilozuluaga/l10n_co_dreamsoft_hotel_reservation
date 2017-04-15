@@ -70,6 +70,7 @@ class quick_room_reservation_inherit(models.TransientModel):
 		if self._context is None:
 			self._context = {}
 		res = super(quick_room_reservation_inherit, self).default_get(fields)
+		_logger.info(self._context)
 		if self._context:
 			keys = self._context.keys()
 			if 'date' in keys:

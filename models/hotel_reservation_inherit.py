@@ -38,8 +38,17 @@ class hotel_reservation_inherit(models.Model):
 
 	_inherit = 'hotel.reservation'
 
+	def _obtener_arriban_hoy(self):
+		fecha_hoy = datetime.date.today()
+		fecha_hoy = fecha_hoy.strftime(DEFAULT_SERVER_DATE_FORMAT)
+		for record in self:
+			if record.fecha_entrada == fecha_hoy:
+				record.arriban_hoy = True
+
+
 	fecha_entrada = fields.Date('Fecha prevista de llegada', required=True)
 	fecha_salida = fields.Date('Fecha prevista de salida', required=True)
+	arriban_hoy = fields.Boolean(compute='_obtener_arriban_hoy', store=True, default=False)
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
@@ -69,3 +78,20 @@ class hotel_reservation_inherit(models.Model):
 				if self.checkout < self.checkin:
 					raise except_orm(_('Warning'), _('Checkout date \
 							should be greater than Checkin date.'))
+
+
+	@api.model
+	def actualizar_arriban_hoy(self, ids=None):
+		"""
+			tarea programada que lo que hace es actualizar el estado 
+			del campo arriban hoy que es un booleano que lo que 
+			hace es que el boton de crear folio no aparezca si esta e falso
+			y este campo se crea por defecto en falso para que no se visible 
+			el boton aun.
+		"""
+		fecha_hoy = datetime.date.today()
+		fecha_hoy = fecha_hoy.strftime(DEFAULT_SERVER_DATE_FORMAT)
+		if not ids:
+			entradas_hoy_ids = self.search([('fecha_entrada', '=', fecha_hoy)])
+		return entradas_hoy_ids.write({'arriban_hoy': True})
+
