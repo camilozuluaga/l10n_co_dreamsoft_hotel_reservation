@@ -49,6 +49,12 @@ class hotel_reservation_inherit(models.Model):
 	fecha_entrada = fields.Date('Fecha prevista de llegada', required=True)
 	fecha_salida = fields.Date('Fecha prevista de salida', required=True)
 	arriban_hoy = fields.Boolean(compute='_obtener_arriban_hoy', store=True, default=False)
+	date_order = fields.Date('Fecha de la Reserva', required=True, states={'confirm': [('readonly', False)], 'draft': [('readonly', False)]})
+	warehouse_id = fields.Many2one('stock.warehouse', 'Hotel', required=True, states={'confirm': [('readonly', False)], 'draft': [('readonly', False)]})
+	partner_id = fields.Many2one('res.partner', string="Cliente", required=True, states={'confirm': [('readonly', False)], 'draft': [('readonly', False)]}) 
+	partner_order_id = fields.Many2one('res.partner', 'Ordenarel Contacto', required=True, states={'confirm': [('readonly', False)], 'draft': [('readonly', False)]})
+	partner_invoice_id = fields.Many2one(u'res.partner', 'Dirección de Facturación', required=True, states={'confirm': [('readonly', False)]})
+	pricelist_id = fields.Many2one('product.pricelist', 'Lista de Precios', required=True, states={'confirm': [('readonly', False)], 'draft': [('readonly', False)]})
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):

@@ -36,9 +36,5 @@ class HotelReservation_inherit(models.Model):
 	_name = 'hotel.reservation'
 	_inherit = 'hotel.reservation'
 
-	@api.multi
-	def _create_folio(self):
-		res = super(hotel.reservation, self)._create_folio()
-		_logger.info("Maldito naco")
-		return res
+
 

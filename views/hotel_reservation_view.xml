@@ -32,6 +32,30 @@
             <attribute name="attrs">{'invisible': [('arriban_hoy', '=', False)]}</attribute>
           </xpath>
 
+          <xpath expr="//field[@name='date_order']" position="inside">
+            <attribute name="date_order" class="oe_inline"/>
+          </xpath>
+
+          <xpath expr="//field[@name='warehouse_id']" position="inside">
+            <attribute name="warehouse_id" class="oe_inline" readonly="0"/>
+          </xpath>
+
+          <xpath expr="//field[@name='partner_id']" position="inside">
+            <attribute name="partner_id" class="oe_inline"/>
+          </xpath>
+
+          <xpath expr="//field[@name='partner_order_id']" position="inside">
+            <attribute name="partner_order_id" class="oe_inline"/>
+          </xpath>
+
+          <xpath expr="//field[@name='partner_invoice_id']" position="inside">
+            <attribute name="partner_invoice_id" class="oe_inline"/>
+          </xpath>
+
+          <xpath expr="//field[@name='pricelist_id']" position="inside">
+            <attribute name="pricelist_id" class="oe_inline"/>
+          </xpath>
+          
       </field>
     </record>
 
