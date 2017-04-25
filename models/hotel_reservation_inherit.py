@@ -96,11 +96,13 @@ class hotel_reservation_inherit(models.Model):
 		return entradas_hoy_ids.write({'arriban_hoy': True})
 
 
- 	@api.multi
+
+	@api.multi
 	def done(self):
 
 		"""
-			Funcion para llamar al modelo donde se va hacer el registro de las personas cuando llegan al hotel.
+			Funcion para llamar al modelo donde se va hacer el registro de las personas cuando llegan al hotel, 
+			este funcion funciona cuando se da click en el boton Crear Folio.
 		"""
 
 		self._create_folio()
@@ -113,3 +115,9 @@ class hotel_reservation_inherit(models.Model):
 			'view_type': 'form',
 			'target': 'current'
 		}	
+
+	@api.constrains('adults')
+	def verificar_adultos(self):
+
+		if self.adults<=0:
+			raise except_orm(_('Warning'), _('Debe de haber como minimo un adulto'))
