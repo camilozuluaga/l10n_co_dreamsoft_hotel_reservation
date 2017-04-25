@@ -101,3 +101,16 @@ class hotel_reservation_inherit(models.Model):
 			entradas_hoy_ids = self.search([('fecha_entrada', '=', fecha_hoy)])
 		return entradas_hoy_ids.write({'arriban_hoy': True})
 
+
+
+
+
+	@api.constrains('adults')
+	def verificar_adultos(self):
+
+		if self.adults<=0:
+			raise except_orm(_('Warning'), _('Debe de haber como minimo un adulto'))
+
+			
+
+
