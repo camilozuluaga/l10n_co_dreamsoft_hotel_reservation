@@ -61,7 +61,7 @@
           </xpath>
 
           <xpath expr="//field[@name='adults']" position="attributes">
-            <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+            <attribute name="attrs">{'readonly':[('state','in',('done'))], 'default':[('adults','=', 1)]}</attribute>
           </xpath>
 
           <xpath expr="//field[@name='children']" position="attributes">
