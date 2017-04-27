@@ -49,6 +49,7 @@ class hotel_reservation_inherit(models.Model):
 	fecha_entrada = fields.Date('Fecha prevista de llegada', required=True)
 	fecha_salida = fields.Date('Fecha prevista de salida', required=True)
 	arriban_hoy = fields.Boolean(compute='_obtener_arriban_hoy', store=True, default=False)
+	adults=fields.Integer('Adultos',default=1)
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
