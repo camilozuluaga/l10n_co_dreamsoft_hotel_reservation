@@ -109,7 +109,7 @@ class hotel_reservation_inherit(models.Model):
 		_logger.info("entras")
 		return {
 			'name': 'example',
-			'res_model': 'stock.warehouse',
+			'res_model': 'dreamsoft.reserva.acompanantes',
 			'type': 'ir.actions.act_window',
 			'view_id': False,
 			'view_mode': 'form',
