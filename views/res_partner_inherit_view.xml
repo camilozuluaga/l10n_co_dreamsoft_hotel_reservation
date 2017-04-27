@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+  <data>
+
+    <!-- Inherit view hotel restaurant reservation form-->
+    <record model="ir.ui.view" id="view_hotel_reservation_form">
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="arch" type="xml">
+        <field name="street" position="before">
+          <field name="checkin_id" invisible="1" />
+        </field>
+      </field>
+    </record>
+
+  </data>
+</odoo>
