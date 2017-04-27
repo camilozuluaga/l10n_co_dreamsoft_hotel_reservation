@@ -49,7 +49,7 @@ class hotel_reservation_inherit(models.Model):
 	fecha_entrada = fields.Date('Fecha prevista de llegada', required=True)
 	fecha_salida = fields.Date('Fecha prevista de salida', required=True)
 	arriban_hoy = fields.Boolean(compute='_obtener_arriban_hoy', store=True, default=False)
-	adults=fields.Integer('Adultos',default=1)
+	#adults=fields.Integer('Adultos',default=1)
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
@@ -105,8 +105,8 @@ class hotel_reservation_inherit(models.Model):
 			Funcion para llamar al modelo donde se va hacer el registro de las personas cuando llegan al hotel, 
 			este funcion funciona cuando se da click en el boton Crear Folio.
 		"""
-
 		self._create_folio()
+		_logger.info("entras")
 		return {
 			'name': 'example',
 			'res_model': 'stock.warehouse',
@@ -116,6 +116,7 @@ class hotel_reservation_inherit(models.Model):
 			'view_type': 'form',
 			'target': 'current'
 		}	
+
 
 	@api.constrains('adults')
 	def verificar_adultos(self):

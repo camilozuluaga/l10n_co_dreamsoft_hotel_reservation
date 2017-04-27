@@ -64,8 +64,6 @@
 						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
 					</xpath>
 
-				
-
 					<xpath expr="//field[@name='children']" position="attributes">
 						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
 					</xpath>
