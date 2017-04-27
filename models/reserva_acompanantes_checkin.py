@@ -33,6 +33,9 @@ _logger = logging.getLogger(__name__)
 
 
 class reserva_acompanantes_checkin(models.Model):
-	name = 'dreamsoft.reserva.acompanantes'
+	_name = 'dreamsoft.reserva_acompanantes'
 
 	checkin_id = fields.One2many('res.partner','checkin_id', u'Acompañantes')
+
+
+reserva_acompanantes_checkin()

@@ -49,7 +49,7 @@ class hotel_reservation_inherit(models.Model):
 	fecha_entrada = fields.Date('Fecha prevista de llegada', required=True)
 	fecha_salida = fields.Date('Fecha prevista de salida', required=True)
 	arriban_hoy = fields.Boolean(compute='_obtener_arriban_hoy', store=True, default=False)
-	#adults=fields.Integer('Adultos',default=1)
+	adults=fields.Integer('Adultos',default=1)
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
@@ -105,16 +105,15 @@ class hotel_reservation_inherit(models.Model):
 			Funcion para llamar al modelo donde se va hacer el registro de las personas cuando llegan al hotel, 
 			este funcion funciona cuando se da click en el boton Crear Folio.
 		"""
-		self._create_folio()
-		_logger.info("entras")
+		#self._create_folio()
 		return {
-			'name': 'example',
-			'res_model': 'dreamsoft.reserva.acompanantes',
+			'name': 'Registro detallado',
+			'res_model': 'dreamsoft.reserva_acompanantes',
 			'type': 'ir.actions.act_window',
 			'view_id': False,
 			'view_mode': 'form',
 			'view_type': 'form',
-			'target': 'current'
+			'target': 'new'
 		}	
 
 
