@@ -1,75 +1,77 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-  <data>
+	<data>
 
-    <!-- Inherit view hotel restaurant reservation form-->
-    <record model="ir.ui.view" id="view_hotel_reservation_form">
-      <field name="model">hotel.reservation</field>
-      <field name="inherit_id" ref="hotel_reservation.view_hotel_reservation_form"/>
-      <field name="arch" type="xml">
+		<!-- Inherit view hotel restaurant reservation form-->
+		<record model="ir.ui.view" id="view_hotel_reservation_form">
+			<field name="model">hotel.reservation</field>
+			<field name="inherit_id" ref="hotel_reservation.view_hotel_reservation_form"/>
+			<field name="arch" type="xml">
 
-          <field name="checkin" position="attributes">
-            <attribute name="invisible">1</attribute>
-          </field>
+					<field name="checkin" position="attributes">
+						<attribute name="invisible">1</attribute>
+					</field>
 
-          <field name="checkout" position="attributes">
-            <attribute name="invisible">1</attribute>
-          </field>
+					<field name="checkout" position="attributes">
+						<attribute name="invisible">1</attribute>
+					</field>
 
-          <xpath expr="//field[@name='adults']" position="before">
-            <field name="fecha_entrada" class="oe_inline" attrs="{'readonly':[('state','in',('done'))]}"/>
-          </xpath>
+					<xpath expr="//field[@name='adults']" position="before">
+						<field name="fecha_entrada" class="oe_inline" attrs="{'readonly':[('state','in',('done'))]}"/>
+					</xpath>
 
-          <xpath expr="//field[@name='adults']" position="before">
-            <field name="fecha_salida" class="oe_inline" attrs="{'readonly':[('state','in',('done'))]}"/>
-          </xpath>
+					<xpath expr="//field[@name='adults']" position="before">
+						<field name="fecha_salida" class="oe_inline" attrs="{'readonly':[('state','in',('done'))]}"/>
+					</xpath>
 
-          <xpath expr="//button[@name='done']" position="after">
-            <field name="arriban_hoy" invisible="1"/>
-          </xpath>
+					<xpath expr="//button[@name='done']" position="after">
+						<field name="arriban_hoy" invisible="1"/>
+					</xpath>
 
-          <xpath expr="//button[@name='done']" position="attributes">
-            <attribute name="attrs">{'invisible': [('arriban_hoy', '=', False)]}</attribute>
-          </xpath>
+					<xpath expr="//button[@name='done']" position="attributes">
+						<attribute name="attrs">{'invisible': [('arriban_hoy', '=', False)]}</attribute>
+					</xpath>
 
-          <xpath expr="//button[@name='done']" position="attributes">
-            <attribute name="type">object</attribute>
-          </xpath>
+					<xpath expr="//button[@name='done']" position="attributes">
+						<attribute name="type">object</attribute>
+					</xpath>
 
-          <xpath expr="//field[@name='date_order']" position="attributes">
-            <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
-          </xpath>
+					<xpath expr="//field[@name='date_order']" position="attributes">
+						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+					</xpath>
 
-          <xpath expr="//field[@name='warehouse_id']" position="attributes">
-            <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
-          </xpath>
+					<xpath expr="//field[@name='warehouse_id']" position="attributes">
+						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+					</xpath>
 
-          <xpath expr="//field[@name='partner_id']" position="attributes">
-            <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
-          </xpath>
+					<xpath expr="//field[@name='partner_id']" position="attributes">
+						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+					</xpath>
 
-          <xpath expr="//field[@name='partner_order_id']" position="attributes">
-            <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
-          </xpath>
+					<xpath expr="//field[@name='partner_order_id']" position="attributes">
+						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+					</xpath>
 
-          <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
-            <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
-          </xpath>
+					<xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+					</xpath>
 
-          <xpath expr="//field[@name='pricelist_id']" position="attributes">
-            <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
-          </xpath>
+					<xpath expr="//field[@name='pricelist_id']" position="attributes">
+						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+					</xpath>
 
-          <xpath expr="//field[@name='adults']" position="attributes">
-            <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
-          </xpath>
+					<xpath expr="//field[@name='adults']" position="attributes">
+						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+					</xpath>
 
-          <xpath expr="//field[@name='children']" position="attributes">
-            <attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
-          </xpath>
+				
 
-      </field>
-    </record>
+					<xpath expr="//field[@name='children']" position="attributes">
+						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+					</xpath>
 
-  </data>
+			</field>
+		</record>
+
+	</data>
 </odoo>
