@@ -17,6 +17,7 @@
         'views/quick_room_reservation_view.xml',
         'views/hotel_reservation_view.xml',
         'views/res_partner_inherit_view.xml',
+        'views/reserva_acompanantes_view.xml',
         'data/data_tareas_programadas.xml',
     ],
     'qweb': [],

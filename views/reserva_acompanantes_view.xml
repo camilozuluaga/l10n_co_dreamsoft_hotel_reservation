@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xml>
+<odoo>  
+
+    <record id="view_dreamsoft_reserva_acompanante_form" model="ir.ui.view">
+        <field name="name">hotel_view_dreamsoft_reserva_acompanante_form</field>
+        <field name="model">dreamsoft.reserva_acompanantes</field>
+        <field name="arch" type="xml">
+            <form string="Configuracion horario">
+                <group colspan="4" col="6">
+                    <field name="checkin_ids"/>
+                    <field name="numero_de_reserva_id" invisible='1'/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dreamsoft_reserva_acompanante" model="ir.actions.act_window">
+        <field name="name">Configuracion horario</field>
+        <field name="res_model">dreamsoft.reserva_acompanantes</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

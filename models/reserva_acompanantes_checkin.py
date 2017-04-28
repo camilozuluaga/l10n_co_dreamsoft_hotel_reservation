@@ -33,9 +33,28 @@ _logger = logging.getLogger(__name__)
 
 
 class reserva_acompanantes_checkin(models.Model):
+
+
 	_name = 'dreamsoft.reserva_acompanantes'
+	_rec_name_ = 'checkin_ids'
 
-	checkin_id = fields.One2many('res.partner','checkin_id', u'Acompañantes')
+	checkin_ids = fields.One2many('res.partner','checkin_id', string=u'Acompañantes')
+	numero_de_reserva_id=fields.Many2one('hotel.reservation')
+
+	@api.model
+	def create(self, vals):
+		"""
+		sobreescribimos el metodo create para que los 
+		usuarios no puedan sino crear un solo registro 
+		para la configuracion de los horarios.
+		
+		@param self: The object pointer
+		@param vals: dictionary of fields value.
+		@return: new record set for hotel folio.
+		"""
+		
+
+		vals['numero_de_reserva_id'] = self._context['reserva_id']
 
 
-reserva_acompanantes_checkin()
+		return  super(reserva_acompanantes_checkin, self).create(vals)

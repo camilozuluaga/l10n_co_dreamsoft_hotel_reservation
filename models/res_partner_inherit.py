@@ -38,4 +38,4 @@ class res_partner_inherit(models.Model):
 
 	_inherit = 'res.partner'
 
-	checkin_id = fields.Many2one('dreamsoft.reserva.acompanantes', string='Acompanantes')
+	checkin_id = fields.Many2one(comodel_name='dreamsoft.reserva.acompanantes', string='Acompanantes')

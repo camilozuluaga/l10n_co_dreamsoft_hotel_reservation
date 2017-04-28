@@ -106,10 +106,13 @@ class hotel_reservation_inherit(models.Model):
 			este funcion funciona cuando se da click en el boton Crear Folio.
 		"""
 		#self._create_folio()
+		ctx = dict(self.env.context).copy()
+		ctx.update({'reserva_id': self.ids[0]})
 		return {
 			'name': 'Registro detallado',
 			'res_model': 'dreamsoft.reserva_acompanantes',
 			'type': 'ir.actions.act_window',
+			'context': ctx,
 			'view_id': False,
 			'view_mode': 'form',
 			'view_type': 'form',
