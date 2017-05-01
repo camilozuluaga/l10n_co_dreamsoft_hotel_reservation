@@ -1,5 +1,4 @@
 import configuracion_reserva_periodo_resumido
-import registro_completo
 import room_reservation_summary_inherit
 import quick_room_reservation_inherit
 import hotel_reservation_inherit
