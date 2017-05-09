@@ -4,6 +4,6 @@ import room_reservation_summary_inherit
 import quick_room_reservation_inherit
 import hotel_reservation_inherit
 import reserva_acompanantes_checkin
-import res_partner_inherit
+import relacion_acompanantes_reserva
 
 

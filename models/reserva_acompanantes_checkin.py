@@ -38,23 +38,30 @@ class reserva_acompanantes_checkin(models.Model):
 	_name = 'dreamsoft.reserva_acompanantes'
 	_rec_name_ = 'checkin_ids'
 
-	checkin_ids = fields.One2many('res.partner','checkin_id', string=u'Acompañantes')
-	numero_de_reserva_id=fields.Many2one('hotel.reservation')
+	checkin_ids = fields.One2many('dreamsoft.acompanantes_reserva','id_res_partner', string=u'Acompañantes')
+	
+
 
 	@api.model
-	def create(self, vals):
+	def default_get(self, fields):
 		"""
-		sobreescribimos el metodo create para que los 
-		usuarios no puedan sino crear un solo registro 
-		para la configuracion de los horarios.
-		
-		@param self: The object pointer
-		@param vals: dictionary of fields value.
-		@return: new record set for hotel folio.
+		To get default values for the object.
+		@param self: The object pointer.
+		@param fields: List of fields for which we want default values
+		@return: A dictionary which of fields with values.
 		"""
-		
+		if self._context is None:
+			self._context = {}
+		res = super(reserva_acompanantes_checkin, self).default_get(fields)
+		_logger.info(self._context)
+		usuario_principal=[]
+		if self._context:
+			keys = self._context.keys()
+			if 'partner_id' in keys:
+				usuario_principal.append({'id_res_partner' : self._context['partner_id']}))
+			product_obj = self.pool.get('res.partner')
+			product_id = product_obj.search(cr, uid, [('id','=',self._context['partner_id'])])
+			_logger.info(product_id)
+			res['checkin_ids'] = usuario_principal[0]
+		return res
 
-		vals['numero_de_reserva_id'] = self._context['reserva_id']
-
-
-		return  super(reserva_acompanantes_checkin, self).create(vals)

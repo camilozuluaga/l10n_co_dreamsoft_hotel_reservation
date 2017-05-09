@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xml>
+<odoo>  
+
+    <record id="view_dreamsoft_relacion_reserva_acompanante_form" model="ir.ui.view">
+        <field name="name">hotel_view_dreamsoft_acompanante_reserva_form</field>
+        <field name="model">dreamsoft.acompanantes_reserva</field>
+        <field name="arch" type="xml">
+            <form string="Agregar acompanantes">
+                    <field name="id_reserva_acompanantes" invisible='1'/>
+                    <field name="id_res_partner"/>
+                    <field name="numero_de_reserva_id" invisible='1'/>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dreamsoft_acompanante_reserva" model="ir.actions.act_window">
+        <field name="name">Agregar acompañantes</field>
+        <field name="res_model">dreamsoft.acompanantes_reserva</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

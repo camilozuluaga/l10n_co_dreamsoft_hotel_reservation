@@ -32,10 +32,15 @@ from decimal import Decimal
 import logging
 _logger = logging.getLogger(__name__)
 
-class res_partner_inherit(models.Model):
+class relacion_acompanantes_reserva(models.Model):
 
-	_name = 'res.partner'
+	_name = 'dreamsoft.acompanantes_reserva'
 
-	_inherit = 'res.partner'
+	id_reserva_acompanantes=fields.Many2one('dreamsoft.reserva_acompanantes',u'Acompañantes')
+	
+	id_res_partner=fields.Many2one('res.partner',u'Personas')
+	
+	numero_de_reserva_id=fields.Many2one('hotel.reservation','Numero reserva')
 
-	checkin_id = fields.Many2one(comodel_name='dreamsoft.reserva.acompanantes', string='Acompanantes')
+	
+	

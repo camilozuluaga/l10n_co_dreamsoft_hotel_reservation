@@ -7,9 +7,12 @@
         <field name="model">dreamsoft.reserva_acompanantes</field>
         <field name="arch" type="xml">
             <form string="Configuracion horario">
-                <group colspan="4" col="6">
-                    <field name="checkin_ids"/>
-                    <field name="numero_de_reserva_id" invisible='1'/>
+                <group colspan='6' col='4'>
+                    <field name="checkin_ids">
+                                <field name="id_reserva_acompanantes" invisible='1'/>
+                                <field name="id_res_partner"/>
+                                <field name="numero_de_reserva_id" invisible='1' />
+                    </field>
                 </group>
             </form>
         </field>
