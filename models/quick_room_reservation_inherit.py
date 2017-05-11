@@ -86,8 +86,12 @@ class quick_room_reservation_inherit(models.TransientModel):
 		@param self: The object pointer
 		@return: new record set for hotel reservation.
 		"""
+
+		_logger.info(self.fecha_entrada)
+
 		res = super(quick_room_reservation_inherit, self).room_reserve()
 
-		res.write({'fecha_entrada': self.fecha_entrada, 'fecha_salida': self.fecha_salida})
+		#res.write({'fecha_entrada': self.fecha_entrada, 'fecha_salida': self.fecha_salida})
 
+		return res
 

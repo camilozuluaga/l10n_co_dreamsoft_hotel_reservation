@@ -112,7 +112,7 @@ class hotel_reservation_inherit(models.Model):
 		_logger.info(self.partner_id.id)
 		return {
 			'name': 'Registro detallado',
-			'res_model': 'dreamsoft.reserva_acompanantes',
+			'res_model': 'dreamsoft.completar_checkin',
 			'type': 'ir.actions.act_window',
 			'context': ctx,
 			'view_id': False,

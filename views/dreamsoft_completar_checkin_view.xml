@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="view_completar_checkin_relacion_form">
+      <field name="name">dreamsoft.completar.checkin.form</field>
+      <field name="model">dreamsoft.completar_checkin</field>
+      <field name="arch" type="xml">
+        <form string="Completar Checkin">
+          <field name="acompanantes_ids" colspan="4" nolabel='1'>
+              <form string="Completar Checkin">
+                  <group>
+                      <field name="relacion_completar_checkin_id" invisible="1" />
+                      <field name="name" />
+                      <field name="reservation_id" invisible="1" />
+                  </group>
+              </form>
+              <tree string="Order List">
+                <field name="relacion_completar_checkin_id" invisible="1" />
+                <field name="name" />
+                <field name="reservation_id"/>
+              </tree>
+          </field>
+        </form>
+      </field>
+    </record>
+
+  </data>
+</odoo>

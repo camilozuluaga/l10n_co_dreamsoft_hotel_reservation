@@ -32,15 +32,31 @@ from decimal import Decimal
 import logging
 _logger = logging.getLogger(__name__)
 
-class relacion_acompanantes_reserva(models.Model):
+class hotel_completar_checkin(models.Model):
 
-	_name = 'dreamsoft.acompanantes_reserva'
+	_name = 'dreamsoft.completar_checkin'
 
-	id_reserva_acompanantes=fields.Many2one('dreamsoft.reserva_acompanantes',u'Acompañantes')
-	
-	id_res_partner=fields.Many2one('res.partner',u'Personas')
-	
-	numero_de_reserva_id=fields.Many2one('hotel.reservation','Numero reserva')
 
-	
-	
+	acompanantes_ids = fields.One2many('dreamsoft.completar_checkin_relacion', 'relacion_completar_checkin_id', u'Acompañantes')
+
+
+
+
+
+
+	@api.model
+	def default_get(self, fields):
+
+		if self._context is None:
+			self._context = {}
+
+		res = super(hotel_completar_checkin, self).default_get(fields)
+		usuario_principal=[]
+
+		if self._context:
+			keys = self._context.keys()
+			if 'partner_id' in keys:
+
+				usuario_principal.append((0,0,{'name' : self._context['partner_id'], 'reservation_id': self._context['reserva_id']}))
+			res['acompanantes_ids'] = usuario_principal
+		return res

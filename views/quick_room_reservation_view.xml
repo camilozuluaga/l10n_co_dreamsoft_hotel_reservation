@@ -4,6 +4,7 @@
 
     <!-- Inherit view hotel restaurant reservation form-->
     <record model="ir.ui.view" id="view_quick_reservation_form">
+      <field name="name">quick.room.reservation.form</field>
       <field name="model">quick.room.reservation</field>
       <field name="inherit_id" ref="hotel_reservation.quick_room_reservation_form_view"/>
       <field name="arch" type="xml">
