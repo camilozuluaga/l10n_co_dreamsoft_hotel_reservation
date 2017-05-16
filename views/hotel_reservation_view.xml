@@ -38,6 +38,7 @@
 
 					<xpath expr="//field[@name='date_order']" position="attributes">
 						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+						<attribute name="String">Fecha de reserva</attribute>
 					</xpath>
 
 					<xpath expr="//field[@name='warehouse_id']" position="attributes">
@@ -46,6 +47,7 @@
 
 					<xpath expr="//field[@name='partner_id']" position="attributes">
 						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+						<attribute name="String">Huésped</attribute>
 					</xpath>
 
 					<xpath expr="//field[@name='partner_order_id']" position="attributes">
@@ -66,7 +68,10 @@
 
 					<xpath expr="//field[@name='children']" position="attributes">
 						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
+						<attribute name="String">Niños</attribute>
 					</xpath>
+
+
 
 			</field>
 		</record>
