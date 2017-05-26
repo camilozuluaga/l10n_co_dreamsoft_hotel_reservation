@@ -46,8 +46,8 @@ class hotel_reservation_inherit(models.Model):
 				record.arriban_hoy = True
 
 
-	fecha_entrada = fields.Date('Fecha prevista de llegada', required=True)
-	fecha_salida = fields.Date('Fecha prevista de salida', required=True)
+	fecha_entrada = fields.Date('Fecha prevista de llegada', required=True, store=True)
+	fecha_salida = fields.Date('Fecha prevista de salida', required=True, store=True)
 	arriban_hoy = fields.Boolean(compute='_obtener_arriban_hoy', store=True, default=False)
 	adults=fields.Integer('Adultos',default=1)
 
@@ -57,7 +57,6 @@ class hotel_reservation_inherit(models.Model):
 		if self.fecha_entrada:
 			fecha_entrada = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00' 
 			self.checkin = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_entrada)
-
 			if self.checkin < fecha_hoy:
 				raise except_orm(_('Warning'), _('Fecha de Check In \
 					No puede ser menor a la fecha de hoy.'))
@@ -78,7 +77,7 @@ class hotel_reservation_inherit(models.Model):
 			if self.checkout and self.checkin:
 				if self.checkout < self.checkin:
 					raise except_orm(_('Warning'), _('Checkout date \
-							should be greater than Checkin date.'))
+							Hola'))
 
 
 	@api.model
@@ -105,7 +104,7 @@ class hotel_reservation_inherit(models.Model):
 			Funcion para llamar al modelo donde se va hacer el registro de las personas cuando llegan al hotel, 
 			este funcion funciona cuando se da click en el boton Crear Folio.
 		"""
-		#self._create_folio()
+		self._create_folio()
 		ctx = dict(self.env.context).copy()	
 		ctx.update({'reserva_id': self.ids[0]})
 		ctx.update({'partner_id': self.partner_id.id})
@@ -127,3 +126,37 @@ class hotel_reservation_inherit(models.Model):
 
 		if self.adults<=0:
 			raise except_orm(_('Warning'), _('Debe de haber como minimo un adulto'))
+
+
+
+	@api.constrains('checkin', 'checkout')
+	def check_in_out_dates(self):
+		"""
+		When date_order is less then checkin date or
+		Checkout date should be greater than the checkin date.
+		"""
+		if self.checkout and self.checkin:
+			if self.checkin[0:10] < self.date_order[0:10]:
+				raise except_orm(_('Warning'), _('Checkin date should be \
+				greater than the current date.'))
+			if self.checkout < self.checkin:
+				raise except_orm(_('Warning'), _('Checkout date \
+				should be greater than Checkin date.'))
+
+
+	@api.model
+	def create(self, vals):
+		"""
+		Overrides orm create method.
+		@param self: The object pointer
+		@param vals: dictionary of fields value.
+		"""
+		if not vals:
+			vals = {}
+		if self._context is None:
+			self._context = {}
+			
+		vals['fecha_entrada'] = vals['checkin']
+		vals['fecha_salida'] = vals['checkout']
+
+		return super(hotel_reservation_inherit, self).create(vals)

@@ -70,7 +70,6 @@ class quick_room_reservation_inherit(models.TransientModel):
 		if self._context is None:
 			self._context = {}
 		res = super(quick_room_reservation_inherit, self).default_get(fields)
-		_logger.info(self._context)
 		if self._context:
 			keys = self._context.keys()
 			if 'date' in keys:
@@ -87,11 +86,9 @@ class quick_room_reservation_inherit(models.TransientModel):
 		@return: new record set for hotel reservation.
 		"""
 
-		_logger.info(self.fecha_entrada)
-
 		res = super(quick_room_reservation_inherit, self).room_reserve()
 
-		#res.write({'fecha_entrada': self.fecha_entrada, 'fecha_salida': self.fecha_salida})
+		res.write({'fecha_entrada': self.fecha_entrada, 'fecha_salida': self.fecha_salida})
 
 		return res
 
