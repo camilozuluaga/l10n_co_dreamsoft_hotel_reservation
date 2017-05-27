@@ -21,5 +21,5 @@
         'data/data_tareas_programadas.xml',
     ],
     'qweb': [],
-    'installable': True,
+    'installable': False,
 }
