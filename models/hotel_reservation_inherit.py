@@ -54,12 +54,17 @@ class hotel_reservation_inherit(models.Model):
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
 		fecha_hoy = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+		coso= None
 		if self.fecha_entrada:
 			fecha_entrada = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00' 
-			self.checkin = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_entrada)
-			if self.checkin < fecha_hoy:
-				raise except_orm(_('Warning'), _('Fecha de Check In \
-					No puede ser menor a la fecha de hoy.'))
+			coso = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_entrada)
+
+			self.checkin
+			_logger.info(self.checkin)
+			_logger.info(fecha_hoy)
+			#if self.checkin >= fecha_hoy:
+			#	raise except_orm(_('Warning'), _('Fecha de Check In \
+			#		No puede ser menor a la fecha de hoy.'))
 
 
 	@api.onchange('fecha_salida')
@@ -70,14 +75,22 @@ class hotel_reservation_inherit(models.Model):
 			fecha_salida = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
 			self.checkout = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_salida)
 
-			if self.checkout < fecha_hoy:
-				raise except_orm(_('Warning'), _('Fecha de Check Out \
-					No puede ser menor a la fecha de hoy.'))
+			
+			_logger.info(self.checkout)
+			_logger.info(fecha_hoy)
+			#if self.checkout >= fecha_hoy:
+			#	raise except_orm(_('Warning'), _('Fecha de Check Out \
+			#		No puede ser menor a la fecha de hoy.'))
 
-			if self.checkout and self.checkin:
-				if self.checkout < self.checkin:
-					raise except_orm(_('Warning'), _('Checkout date \
-							Hola'))
+			date_chekin = self.checkin
+			date_checkout = self.checkout
+
+			room_reservation_ids = self.env['hotel.reservation'].search([('checkin', '>=', date_chekin), ('checkout', '<=', date_checkout), ('state', '!=', 'confirm')])
+			
+			if room_reservation_ids:
+				raise except_orm(_('Warning'), _('En estas fechas ya se ha registrado una reserva. \n Cambie la fecha prevista de llegada y la fecha prevista de salida, para poder crear la reserva.'))
+
+			
 
 
 	@api.model
@@ -105,7 +118,7 @@ class hotel_reservation_inherit(models.Model):
 			este funcion funciona cuando se da click en el boton Crear Folio.
 		"""
 		self._create_folio()
-		ctx = dict(self.env.context).copy()	
+		ctx = dict(self.env.context).copy() 
 		ctx.update({'reserva_id': self.ids[0]})
 		ctx.update({'partner_id': self.partner_id.id})
 		_logger.info(self.partner_id.id)
@@ -118,7 +131,7 @@ class hotel_reservation_inherit(models.Model):
 			'view_mode': 'form',
 			'view_type': 'form',
 			'target': 'new'
-		}	
+		}   
 
 
 	@api.constrains('adults')
@@ -144,6 +157,12 @@ class hotel_reservation_inherit(models.Model):
 				should be greater than Checkin date.'))
 
 
+	@api.multi
+	def write(self, vals):
+		_logger.info('Lo que estoy editando')
+		_logger.info(vals)
+		return super(hotel_reservation_inherit, self).write(vals)
+
 	@api.model
 	def create(self, vals):
 		"""
@@ -158,5 +177,112 @@ class hotel_reservation_inherit(models.Model):
 			
 		vals['fecha_entrada'] = vals['checkin']
 		vals['fecha_salida'] = vals['checkout']
-
 		return super(hotel_reservation_inherit, self).create(vals)
+
+	def name_room(self, list_reserva):
+		name_room=''
+		if list_reserva:
+			if len(list_reserva) == 1:
+				_logger.info('vamos bien')
+				hotel_room_ids = self.env['hotel.room'].search([('id', '=', list_reserva[0])])
+				product_id= hotel_room_ids.product_id
+				for room in product_id:
+					for room_name in product_id:
+						name_room=room_name.name
+						return name_room
+
+		return name_room
+
+
+class HotelReservationLine_inherit(models.Model):
+
+	_name = "hotel_reservation.line"
+	_inherit = 'hotel_reservation.line'
+	
+	@api.onchange('categ_id')
+	def on_change_categ(self):
+
+		_logger.info('*************')
+		_logger.info(self)
+		hotel_room_obj = self.env['hotel.room']
+		hotel_room_ids = hotel_room_obj.search([('categ_id', '=', self.categ_id.id)])
+		_logger.info(hotel_room_ids)
+		_logger.info('Es es la reserva')
+		_logger.info(self.reserve)
+
+
+		hotel_reservation= self.env['hotel_reservation.line']
+		hotel_reservation_ids= hotel_room_obj.search([('categ_id', '=', self.categ_id.id)])
+		_logger.info('mirando como es')
+		_logger.info(hotel_room_ids)
+		for room in hotel_room_ids:
+			_logger.info(room.product_id)
+		_logger.info('####')
+
+		hotel_room_obj = self.env['hotel.room']
+		hotel_room_ids = hotel_room_obj.search([('categ_id', '=',
+												 self.categ_id.id)])
+		room_ids = []
+
+		for room in hotel_room_ids:
+			_logger.info(room.id)
+			assigned = False
+			for line in room.room_reservation_line_ids:
+				if line.status != 'cancel':
+					if (line.check_in <= self.line_id.checkin <=
+						line.check_out) or (line.check_in <=
+											self.line_id.checkout <=
+											line.check_out):
+						assigned = True
+			for rm_line in room.room_line_ids:
+				if rm_line.status != 'cancel':
+					if (rm_line.check_in <= self.line_id.checkin <=
+						rm_line.check_out) or (rm_line.check_in <=
+											   self.line_id.checkout <=
+											   rm_line.check_out):
+						assigned = True
+			if not assigned:
+				room_ids.append(room.id)
+
+
+		date_chekin = self.line_id.checkin
+		date_checkout = self.line_id.checkout
+
+		room_reservation_ids = self.env['hotel.reservation'].search([('checkin', '>=', date_chekin), ('checkout', '<=', date_checkout), ('state', '!=', 'confirm')])
+		
+
+
+
+		domain = {'reserve': [('id', 'in', room_ids)]}
+
+		return {'domain': domain}
+
+
+	@api.multi
+	def write(self, vals):
+		_logger.info(vals)
+		reservation_reserve_id =vals['reserve']
+		reserver_id= reservation_reserve_id[0]
+		reserver_ids= reserver_id[2]
+	
+		name_room = self.env['hotel.reservation'].name_room(reserver_ids)
+		vals['name']=name_room
+
+		return super(HotelReservationLine_inherit, self).write(vals)
+
+	@api.model
+	def create(self, vals):
+		_logger.info(vals)
+		reservation_reserve_id =vals['reserve']
+		reserver_id= reservation_reserve_id[0]
+		reserver_ids= reserver_id[2]
+	
+		name_room = self.env['hotel.reservation'].name_room(reserver_ids)
+		vals['name']=name_room
+
+		return super(HotelReservationLine_inherit, self).create(vals)
+
+
+
+			
+			
