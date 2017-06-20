@@ -160,3 +160,139 @@ class hotel_reservation_inherit(models.Model):
 		vals['fecha_salida'] = vals['checkout']
 
 		return super(hotel_reservation_inherit, self).create(vals)
+
+
+	def name_room(self, list_reserva):
+		name_room=''
+		if list_reserva:
+			if len(list_reserva) == 1:
+				_logger.info('vamos bien')
+				hotel_room_ids = self.env['hotel.room'].search([('id', '=', list_reserva[0])])
+				product_id= hotel_room_ids.product_id
+				for room in product_id:
+					for room_name in product_id:
+						name_room=room_name.name
+						_logger.info(name_room)
+						return name_room
+
+		return name_room
+
+
+class HotelReservationLine_inherit(models.Model):
+
+	_name = "hotel_reservation.line"
+	_inherit = 'hotel_reservation.line'
+	
+	@api.onchange('categ_id')
+	def on_change_categ(self):
+
+		hotel_room_obj = self.env['hotel.room']
+		hotel_room_ids = hotel_room_obj.search([('categ_id', '=', self.categ_id.id)])
+
+		hotel_reservation= self.env['hotel_reservation.line']
+		hotel_reservation_ids= hotel_room_obj.search([('categ_id', '=', self.categ_id.id)])
+		for room in hotel_room_ids:
+			_logger.info(room.product_id)
+
+		hotel_room_obj = self.env['hotel.room']
+		hotel_room_ids = hotel_room_obj.search([('categ_id', '=',
+												 self.categ_id.id)])
+		room_ids = []
+
+		for room in hotel_room_ids:
+			
+			assigned = False
+			for line in room.room_reservation_line_ids:
+				if line.status != 'cancel':
+					if (line.check_in <= self.line_id.checkin <=
+						line.check_out) or (line.check_in <=
+											self.line_id.checkout <=
+											line.check_out):
+						assigned = True
+			for rm_line in room.room_line_ids:
+				if rm_line.status != 'cancel':
+					if (rm_line.check_in <= self.line_id.checkin <=
+						rm_line.check_out) or (rm_line.check_in <=
+											   self.line_id.checkout <=
+											   rm_line.check_out):
+						assigned = True
+			if not assigned:
+				_logger.info(room.id)
+				room_ids.append(room.id)
+
+		_logger.info('Empezando modificacion')
+		date_chekin = self.line_id.checkin
+		date_checkout = self.line_id.checkout
+		#donde van a ir las habitaciones
+		name_room=[]
+
+		#buscamos las reservas que contengan esta fecha
+		room_reservation_ids = self.env['hotel.reservation'].search([('checkin', '>=', date_chekin), ('checkout', '<=', date_checkout), ('state', '=', 'draft')])
+		_logger.info(room_reservation_ids)
+
+		if self.reserve:
+			_logger.info('estamos de una que estamos editando')
+		else:
+			#Condicion si hay una reserva en draft con las mismas fechas
+			if room_reservation_ids:
+				#buscamos la relacion en reservation line para obtener el nombre de la habitacion
+				for x in room_reservation_ids:
+					room_reservation_line_ids = self.env['hotel_reservation.line'].search([('line_id', '=', x.id)])
+					_logger.info(room_reservation_line_ids)
+
+					name_room.append(room_reservation_line_ids.name)
+
+				room_reservation_id = self.retornar_room_id(name_room)
+
+				for x in room_reservation_id:
+					if x.id in room_ids:
+						room_ids.remove(x.id)
+
+		domain = {'reserve': [('id', 'in', room_ids)]}
+		return {'domain': domain}
+
+	#retonar el room de acuerdo al nombre de la habitacion
+	def retornar_room_id(self, name_list):
+		room_ids=''
+		_logger.info('entramos al metodo')
+		if name_list:
+			if len(name_list) > 0:
+				for x in range(len(name_list)):
+					_logger.info(name_list[x])
+					template_ids= self.env['product.template'].search([('name', '=', str(name_list[x]))])
+					_logger.info(template_ids)
+					for i in template_ids:
+						product_id = self.env['product.product'].search([('product_tmpl_id', '=', i.id)])
+						_logger.info(product_id)
+						for z in product_id:
+							room_ids =self.env['hotel.room'].search([('product_id', '=', z.id)])
+
+		return room_ids
+
+
+
+
+
+	@api.multi
+	def write(self, vals):
+		_logger.info(vals)
+		reservation_reserve_id =vals['reserve']
+		reserver_id= reservation_reserve_id[0]
+		reserver_ids= reserver_id[2]
+	
+		name_room = self.env['hotel.reservation'].name_room(reserver_ids)
+		vals['name']=name_room
+
+		return super(HotelReservationLine_inherit, self).write(vals)
+
+	@api.model
+	def create(self, vals):
+		_logger.info(vals)
+		reservation_reserve_id =vals['reserve']
+		reserver_id= reservation_reserve_id[0]
+		reserver_ids= reserver_id[2]
+	
+		name_room = self.env['hotel.reservation'].name_room(reserver_ids)
+		vals['name']=name_room
+
+		return super(HotelReservationLine_inherit, self).create(vals)
