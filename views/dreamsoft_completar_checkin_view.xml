@@ -23,6 +23,8 @@
            
             </fieldset>
 
+            <legend></legend>
+
             <group colspan="2" col="4">
               <group colspan="2" col="2">
                   <field name="pais_partner"/>              
