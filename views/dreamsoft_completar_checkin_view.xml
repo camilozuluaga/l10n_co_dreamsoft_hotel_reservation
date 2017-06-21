@@ -6,6 +6,51 @@
       <field name="model">dreamsoft.completar_checkin</field>
       <field name="arch" type="xml">
         <form string="Completar Checkin">
+          <p class="oe_grey">
+          <strong>Registro de Entrada del Huesped</strong>:</p>
+          <p class="oe_grey">En esta sección se hara el registro de entrada o checkin del huesped, en la cual podra registrar los acompañantes del mismo.
+          </p>
+          <fieldset class="fieldset_margen">
+            <legend>Datos Titular Reserva</legend>
+              <label string="Huesped"/>       
+              <h2><field name="name"/></h2>
+            
+              <group colspan="3" col="6">
+                 <field name="reservation_checkin"/>
+                 <field name="reservation_checkout"/>
+                 <field name="dias_hospedado"/>
+              </group>
+           
+            </fieldset>
+
+            <group colspan="2" col="4">
+              <group colspan="2" col="2">
+                  <field name="pais_partner"/>              
+                  <field name="state_partner"/>              
+                  <field name="city_partner"/>
+                  <field name="street_partner"/>
+                  <field name="email_partner"/>
+                  <field name="telefono_partner"/>          
+                  <field name='date_partner'/>
+                  <field name='reservation_id' invisible="1"/>
+               </group>
+               <group colspan="2" col="2">
+
+                <group colspan="6" col="1">
+                     <group >
+                      <p class="oe_grey" style="text-align: justify;">En cumplimiento de lo ordenado en el <strong>artículo 10 del Decreto 1377 de 2013</strong> el cual reglamentó la <strong>Ley Estatutaria 1581 de 2012</strong> para la protección de datos personales, solicitamos su autorización para suministrarle a su correo electrónico información relevante comercial y promocional de nuestra Finca Hotel.
+                    </p>
+                      </group>
+
+                <group colspan="2" col="4">
+                     <field name='si'/>
+                    <field name='no'/>
+                </group>         
+                </group>       
+                </group>
+               
+            </group>
+          <separator string="Acompañantes"/>
           <field name="acompanantes_ids" colspan="4" nolabel='1'>
               <form string="Completar Checkin">
                   <group>
@@ -20,6 +65,7 @@
                 <field name="reservation_id"/>
               </tree>
           </field>
+
         </form>
       </field>
     </record>
