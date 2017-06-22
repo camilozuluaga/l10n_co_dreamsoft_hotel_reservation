@@ -122,7 +122,6 @@ class hotel_reservation_inherit(models.Model):
 			'view_type': 'form',
 			'target': 'new',
 			'tag': 'reload',
-			'flags': {'form': {'action_buttons': False}},
 		}	
 
         

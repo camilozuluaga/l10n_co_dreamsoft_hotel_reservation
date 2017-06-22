@@ -5,8 +5,7 @@
       <field name="name">dreamsoft.completar.checkin.form</field>
       <field name="model">dreamsoft.completar_checkin</field>
       <field name="arch" type="xml">
-        <form string="Completar Checkin" create="false" edit="False">
-          <button name="save" string="Save" />
+        <form string="Completar Checkin">
           <p class="oe_grey">
           <strong>Registro de Entrada del Huesped</strong>:</p>
           <p class="oe_grey">En esta sección se hara el registro de entrada o checkin del huesped, en la cual podra registrar los acompañantes del mismo.
@@ -68,7 +67,9 @@
                 <field name="reservation_id"/>
               </tree>
           </field>
-
+            <footer>
+              <button name="save" string="Guardar" class="btn-primary"/>
+            </footer>
         </form>
       </field>
     </record>

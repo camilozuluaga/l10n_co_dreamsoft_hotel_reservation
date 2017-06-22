@@ -64,7 +64,8 @@ class hotel_completar_checkin(models.Model):
 		if self._context is None:
 			self._context = {}
 			
-		self.refresh()
+		_logger.info('lo que pasa en coso')
+		_logger.info(vals)
 		return super(hotel_completar_checkin, self).create(vals)
 
 
