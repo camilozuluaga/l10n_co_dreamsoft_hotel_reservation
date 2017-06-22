@@ -53,12 +53,13 @@ class hotel_reservation_inherit(models.Model):
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
-		fecha_hoy = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
+		dt_value = datetime.datetime.now()- datetime.timedelta(hours=5)
 		if self.fecha_entrada:
-			fecha_entrada = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00' 
-			self.checkin = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_entrada)
-			if self.checkin < fecha_hoy:
-				raise except_orm(_('Warning'), _('Fecha de Check In \
+			fecha_salida_calculada = datetime.datetime.strptime(self.fecha_entrada, DEFAULT_SERVER_DATE_FORMAT) + datetime.timedelta(days=1)
+			self.fecha_salida = str(fecha_salida_calculada)
+			self.checkin = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00' 
+			if self.checkin[0:10] < str(dt_value)[0:10]:
+				raise except_orm(_('Warning'), _('Fecha de Check In.... \
 					No puede ser menor a la fecha de hoy.'))
 
 
@@ -67,17 +68,15 @@ class hotel_reservation_inherit(models.Model):
 
 		fecha_hoy = time.strftime(DEFAULT_SERVER_DATE_FORMAT)
 		if self.fecha_salida:
-			fecha_salida = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
-			self.checkout = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_salida)
-
+			self.checkout = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
 			if self.checkout < fecha_hoy:
-				raise except_orm(_('Warning'), _('Fecha de Check Out \
-					No puede ser menor a la fecha de hoy.'))
+				raise except_orm(_('Warning'), _('Fecha de Check Out.... \
+					No puede ser menor o igual a la fecha de hoy.'))
 
 			if self.checkout and self.checkin:
 				if self.checkout < self.checkin:
-					raise except_orm(_('Warning'), _('Checkout date \
-							Hola'))
+					raise except_orm(_('Warning'), _('Fecha de Ckeck Out.... \
+							la fecha del Check Out no puede ser menor a le fecha de Check In '))
 
 
 	@api.model
