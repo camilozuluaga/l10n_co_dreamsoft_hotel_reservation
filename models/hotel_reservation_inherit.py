@@ -98,13 +98,13 @@ class hotel_reservation_inherit(models.Model):
 
 
 	@api.multi
-	def done(self):
+	def create_folio(self):
 
 		"""
 			Funcion para llamar al modelo donde se va hacer el registro de las personas cuando llegan al hotel, 
 			este funcion funciona cuando se da click en el boton Crear Folio.
 		"""
-		self._create_folio()
+		res = super(hotel_reservation_inherit, self).create_folio()
 		ctx = dict(self.env.context).copy()	
 		ctx.update({'reserva_id': self.ids[0]})
 		ctx.update({'partner_id': self.partner_id.id})
@@ -117,8 +117,71 @@ class hotel_reservation_inherit(models.Model):
 			'view_id': False,
 			'view_mode': 'form',
 			'view_type': 'form',
-			'target': 'new'
+			'target': 'new',
+			'tag': 'reload',
+			'flags': {'form': {'action_buttons': False}},
 		}	
+
+        
+
+
+	@api.multi
+	def create_folio_first(self):
+		"""
+		This method is for create new hotel folio.
+		-----------------------------------------
+		@param self: The object pointer
+		@return: new record set for hotel folio.
+		"""
+		hotel_folio_obj = self.env['hotel.folio']
+		room_obj = self.env['hotel.room']
+		for reservation in self:
+			folio_lines = []
+			checkin_date = reservation['checkin']
+			checkout_date = reservation['checkout']
+			if not self.checkin < self.checkout:
+				raise except_orm(_('Error'),
+								 _('Checkout date should be greater \
+								 than the Checkin date.'))
+			duration_vals = (self.onchange_check_dates
+							 (checkin_date=checkin_date,
+							  checkout_date=checkout_date, duration=False))
+			duration = duration_vals.get('duration') or 0.0
+			folio_vals = {
+				'date_order': reservation.date_order,
+				'warehouse_id': reservation.warehouse_id.id,
+				'partner_id': reservation.partner_id.id,
+				'pricelist_id': reservation.pricelist_id.id,
+				'partner_invoice_id': reservation.partner_invoice_id.id,
+				'partner_shipping_id': reservation.partner_shipping_id.id,
+				'checkin_date': reservation.checkin,
+				'checkout_date': reservation.checkout,
+				'duration': duration,
+				'reservation_id': reservation.id,
+				'service_lines': reservation['folio_id']
+			}
+			for line in reservation.reservation_line:
+				for r in line.reserve:
+					folio_lines.append((0, 0, {
+						'checkin_date': checkin_date,
+						'checkout_date': checkout_date,
+						'product_id': r.product_id and r.product_id.id,
+						'name': reservation['reservation_no'],
+						'price_unit': r.list_price,
+						'product_uom_qty': duration,
+						'is_reserved': True}))
+					res_obj = room_obj.browse([r.id])
+					res_obj.write({'status': 'occupied', 'isroom': False})
+			folio_vals.update({'room_lines': folio_lines})
+			folio = hotel_folio_obj.create(folio_vals)
+			if folio:
+				for rm_line in folio.room_lines:
+					rm_line.product_id_change()
+			self._cr.execute('insert into hotel_folio_reservation_rel'
+							 '(order_id, invoice_id) values (%s,%s)',
+							 (reservation.id, folio.id))
+			self.state = 'done'
+		return True
 
 
 	@api.constrains('adults')

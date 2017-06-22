@@ -30,12 +30,10 @@
 
 					<xpath expr="//button[@name='create_folio']" position="attributes">
 						<attribute name="attrs">{'invisible': [('arriban_hoy', '=', False)]}</attribute>
-					</xpath>
-
-					<xpath expr="//button[@name='create_folio']" position="attributes">
+						<attribute name="attrs">{'invisible': [('state', '=', 'done')]}</attribute>
 						<attribute name="type">object</attribute>
 					</xpath>
-
+					
 					<xpath expr="//field[@name='date_order']" position="attributes">
 						<attribute name="attrs">{'readonly':[('state','in',('done'))]}</attribute>
 						<attribute name="String">Fecha de reserva</attribute>

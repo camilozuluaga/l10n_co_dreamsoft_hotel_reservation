@@ -39,7 +39,7 @@ class hotel_completar_checkin(models.Model):
 
 	acompanantes_ids = fields.One2many('dreamsoft.completar_checkin_relacion', 'relacion_completar_checkin_id', u'Acompañantes')
 	reservation_id = fields.Many2one('hotel.reservation', 'Reservacion')
-	name = fields.Many2one('res.partner', 'Huesped', readonly=True, store=False)
+	name = fields.Many2one('res.partner', 'Huesped', readonly=True)
 	street_partner = fields.Char(string='Direccion', related='name.street', readonly=True, store=False)
 	telefono_partner = fields.Char(string='Telefono', related='name.phone', readonly=True, store=False)
 	email_partner = fields.Char(string='Email', related='name.email', readonly=True, store=False)
@@ -53,6 +53,19 @@ class hotel_completar_checkin(models.Model):
 	si = fields.Boolean('Si')
 	no = fields.Boolean('No')
 
+
+
+
+	@api.model
+	def create(self, vals):
+
+		if not vals:
+			vals = {}
+		if self._context is None:
+			self._context = {}
+			
+		self.refresh()
+		return super(hotel_completar_checkin, self).create(vals)
 
 
 	@api.model
@@ -90,3 +103,10 @@ class hotel_completar_checkin(models.Model):
 			dia_calculado= int(dias_calculados[0])
 			
 		return dia_calculado
+
+
+	def refresh(self):
+		#raise NotImplementedError("Ids is just there by convention! Please don't use it.")		self._cr.execute("SELECT * FROM hotel_reservation")
+		return self.env.cr.execute('SELECT * FROM hotel_reservation')
+
+	
