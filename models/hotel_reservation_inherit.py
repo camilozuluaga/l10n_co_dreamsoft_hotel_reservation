@@ -99,7 +99,6 @@ class hotel_reservation_inherit(models.Model):
 		return entradas_hoy_ids.write({'arriban_hoy': True})
 
 
-
 	@api.multi
 	def create_folio(self):
 
@@ -107,7 +106,7 @@ class hotel_reservation_inherit(models.Model):
 			Funcion para llamar al modelo donde se va hacer el registro de las personas cuando llegan al hotel, 
 			este funcion funciona cuando se da click en el boton Crear Folio.
 		"""
-		res = super(hotel_reservation_inherit, self).create_folio()
+		#res = super(hotel_reservation_inherit, self).create_folio()
 		ctx = dict(self.env.context).copy()	
 		ctx.update({'reserva_id': self.ids[0]})
 		ctx.update({'partner_id': self.partner_id.id})
@@ -123,9 +122,6 @@ class hotel_reservation_inherit(models.Model):
 			'target': 'new',
 			'tag': 'reload',
 		}	
-
-        
-
 
 	@api.multi
 	def create_folio_first(self):
@@ -242,6 +238,31 @@ class hotel_reservation_inherit(models.Model):
 
 		return name_room
 
+	@api.constrains('reservation_line', 'adults', 'children')
+	def check_reservation_rooms(self):
+		"""
+		Constraint para validar el numero de personas permitidas en la habitacion
+		"""
+		for reservation in self:
+			if len(reservation.reservation_line) == 0:
+				raise ValidationError(_('Please Select Rooms \
+				For Reservation.'))
+			for rec in reservation.reservation_line:
+				if len(rec.reserve) == 0:
+					raise ValidationError(_('Please Select Rooms \
+					For Reservation.'))
+				cap = 0
+				cap_aditional=0
+				for room in rec.reserve:
+					cap += room.capacity
+				
+				for room in rec.reserve:
+					cap_aditional += room.quantity_people
+
+				if (self.adults + self.children) > (cap + cap_aditional) :
+						raise ValidationError(_('Room Capacity \
+						Exceeded \n Please Select Rooms According to \
+						Members Accomodation.'))
 
 class HotelReservationLine_inherit(models.Model):
 
@@ -282,10 +303,8 @@ class HotelReservationLine_inherit(models.Model):
 											   rm_line.check_out):
 						assigned = True
 			if not assigned:
-				_logger.info(room.id)
 				room_ids.append(room.id)
 
-		_logger.info('Empezando modificacion')
 		date_chekin = self.line_id.checkin
 		date_checkout = self.line_id.checkout
 		#donde van a ir las habitaciones
@@ -293,7 +312,6 @@ class HotelReservationLine_inherit(models.Model):
 
 		#buscamos las reservas que contengan esta fecha
 		room_reservation_ids = self.env['hotel.reservation'].search([('checkin', '>=', date_chekin), ('checkout', '<=', date_checkout), ('state', '=', 'draft')])
-		_logger.info(room_reservation_ids)
 
 		if self.reserve:
 			_logger.info('estamos de una que estamos editando')
@@ -333,10 +351,6 @@ class HotelReservationLine_inherit(models.Model):
 							room_ids =self.env['hotel.room'].search([('product_id', '=', z.id)])
 
 		return room_ids
-
-
-
-
 
 	@api.multi
 	def write(self, vals):

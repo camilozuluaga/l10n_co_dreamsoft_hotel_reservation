@@ -50,22 +50,17 @@ class hotel_completar_checkin(models.Model):
 	reservation_checkin = fields.Datetime(string='Fecha de Entrada', related='reservation_id.checkin', readonly=True, store=False)
 	reservation_checkout = fields.Datetime(string='Fecha de Salida', related='reservation_id.checkout', readonly=True, store=False)
 	dias_hospedado= fields.Integer(u'Días Hospedado', readonly=True, store=False)
-	si = fields.Boolean('Si')
-	no = fields.Boolean('No')
-
-
-
+	si_envio_correo = fields.Boolean('Si')
+	no_envio_correo = fields.Boolean('No')
+	reservation_room = fields.Char('Room', readonly=True, store=False)
 
 	@api.model
 	def create(self, vals):
-
 		if not vals:
 			vals = {}
 		if self._context is None:
 			self._context = {}
-			
-		_logger.info('lo que pasa en coso')
-		_logger.info(vals)
+	
 		return super(hotel_completar_checkin, self).create(vals)
 
 
@@ -75,6 +70,8 @@ class hotel_completar_checkin(models.Model):
 			self._context = {}
 		res = super(hotel_completar_checkin, self).default_get(fields)
 
+		name_room=''
+
 		if self._context:
 			keys = self._context.keys()
 			if 'partner_id' in keys:
@@ -82,6 +79,10 @@ class hotel_completar_checkin(models.Model):
 				res['reservation_id'] = self._context['reserva_id']
 				room_reservation_id = self.env['hotel.reservation'].search([('id', '=', self._context['reserva_id'])])
 				_logger.info(room_reservation_id)
+				for x in room_reservation_id:
+					room_reservation_line_id = self.env['hotel_reservation.line'].search([('line_id', '=', x.id)])
+					name_room= room_reservation_line_id.name
+				res['reservation_room']= str(name_room)
 				date_checkin=None
 				date_checkout=None
 				for x in room_reservation_id:
