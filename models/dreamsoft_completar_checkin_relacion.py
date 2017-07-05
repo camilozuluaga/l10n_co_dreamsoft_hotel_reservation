@@ -56,3 +56,4 @@ class hotel_completar_checkin_relacion(models.Model):
 			if 'reserva_id' in keys:
 				vals['reservation_id'] = self._context['reserva_id']
 		return  super(hotel_completar_checkin_relacion, self).create(vals)
+

@@ -60,7 +60,41 @@ class hotel_completar_checkin(models.Model):
 			vals = {}
 		if self._context is None:
 			self._context = {}
-	
+
+		keys = vals.keys()
+		_logger.info(vals)
+		if 'reservation_id' in keys:
+
+			room_reservation_line_id = self.env['hotel_reservation.line'].search([('line_id', '=', vals['reservation_id'])])
+			
+			if room_reservation_line_id:
+
+
+				for partner in self.env['hotel.reservation'].browse(vals['reservation_id']):
+
+					if partner.partner_id.es_menor:
+
+						raise ValidationError(_('La persona que esta como titular de la reserva es menor de edad'))
+
+
+				producto_id = self.env['product.template'].search([('name', '=', room_reservation_line_id.name)])
+
+				if producto_id:
+
+					room = self.env['hotel.room'].search([('product_id', '=', producto_id.id)])  
+
+					if room:
+
+						if ((len(vals['acompanantes_ids']) + 1) > room.capacity):
+
+							if room.additional_people:
+
+								if ((len(vals['acompanantes_ids']) + 1) > (room.capacity + room.quantity_people)):
+
+									raise ValidationError(_('La capacidad no concuerda con la de la habitacion hay mas personas'))	
+							else:
+									raise ValidationError(_('La capacidad no concuerda con la de la habitacion hay mas personas'))
+
 		return super(hotel_completar_checkin, self).create(vals)
 
 
@@ -78,7 +112,7 @@ class hotel_completar_checkin(models.Model):
 				res['name'] = self._context['partner_id']
 				res['reservation_id'] = self._context['reserva_id']
 				room_reservation_id = self.env['hotel.reservation'].search([('id', '=', self._context['reserva_id'])])
-				_logger.info(room_reservation_id)
+				
 				for x in room_reservation_id:
 					room_reservation_line_id = self.env['hotel_reservation.line'].search([('line_id', '=', x.id)])
 					name_room= room_reservation_line_id.name
@@ -92,6 +126,8 @@ class hotel_completar_checkin(models.Model):
 				
 		return res
 
+
+
 	#Funcion para calcular la diferencia entre dos fechas en dias
 	def calcular_dias(self, date_checkin, date_checkout):
 		dia_calculado=0
@@ -99,7 +135,6 @@ class hotel_completar_checkin(models.Model):
 			fecha_entrada = datetime.strptime(str(date_checkin), '%Y-%m-%d')
 			fecha_salida = datetime.strptime(str(date_checkout), '%Y-%m-%d')
 			dias = fecha_salida - fecha_entrada
-			_logger.info(dias)
 			dias_calculados = str(dias)
 			dias_calculados= dias_calculados.split(' ')
 			dia_calculado= int(dias_calculados[0])

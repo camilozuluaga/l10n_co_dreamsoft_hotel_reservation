@@ -107,10 +107,10 @@ class hotel_reservation_inherit(models.Model):
 			este funcion funciona cuando se da click en el boton Crear Folio.
 		"""
 		#res = super(hotel_reservation_inherit, self).create_folio()
+		self.create_folio_first()
 		ctx = dict(self.env.context).copy()	
 		ctx.update({'reserva_id': self.ids[0]})
 		ctx.update({'partner_id': self.partner_id.id})
-		_logger.info(self.partner_id.id)
 		return {
 			'name': 'Registro detallado',
 			'res_model': 'dreamsoft.completar_checkin',

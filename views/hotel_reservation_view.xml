@@ -29,8 +29,7 @@
 					</xpath>
 
 					<xpath expr="//button[@name='create_folio']" position="attributes">
-						<attribute name="attrs">{'invisible': [('arriban_hoy', '=', False)]}</attribute>
-						<attribute name="attrs">{'invisible': [('state', '=', 'done')]}</attribute>
+						<attribute name="attrs">{'invisible': [('arriban_hoy', '=', False), ('state', 'not in', ['confirm'])]}</attribute>
 						<attribute name="type">object</attribute>
 					</xpath>
 					
