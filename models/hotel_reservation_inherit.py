@@ -232,6 +232,27 @@ class hotel_reservation_inherit(models.Model):
 
 		return super(hotel_reservation_inherit, self).create(vals)
 
+	@api.multi
+	def write(self, vals):
+		_logger.info(vals)
+		reservation_reserve_id =vals['reserve']
+		reserver_id= reservation_reserve_id[0]
+		reserver_ids= reserver_id[2]
+	
+		name_room = self.env['hotel.reservation'].name_room(reserver_ids)
+		vals['name']=name_room
+
+		keys = vals.keys()
+		_logger.info(vals)
+		_logger.info('Estamos guardando el menor')
+		if 'partner_id' in keys:
+
+			partner_name_id = self.env['res.partner'].search([('id', '=', vals['partner_id'])]).es_menor
+			
+			vals['es_menor'] = partner_name_id
+
+		return super(HotelReservationLine_inherit, self).write(vals)
+
 
 	def name_room(self, list_reserva):
 		name_room=''
