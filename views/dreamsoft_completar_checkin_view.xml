@@ -70,7 +70,7 @@
               </tree>
           </field>
             <footer>
-              <button name="save" string="Guardar" class="btn-primary"/>
+              <button name="save" confirm="¿Esta seguro que desea hacer la reserva con un menor de edad?" string="Guardar" class="btn-primary"/>
             </footer>
         </form>
       </field>

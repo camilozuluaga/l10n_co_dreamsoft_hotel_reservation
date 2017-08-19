@@ -68,7 +68,16 @@
 						<attribute name="String">Niños</attribute>
 					</xpath>
 
-
+					<xpath expr="//field[@name='reservation_no']" position="after">
+		              <field name="es_menor" invisible="1"/>
+						<div name="div_mensaje" class="oe_form_box_info oe_text_center" attrs="{'invisible': [('es_menor', '=', False)]}">
+		                    <b> 
+		                        <span class="oe_e">
+		                        	Apreciado usuario el titular de la reserva es un menor de edad
+		                        </span>
+		                    </b>
+		                </div>
+		            </xpath>
 
 			</field>
 		</record>

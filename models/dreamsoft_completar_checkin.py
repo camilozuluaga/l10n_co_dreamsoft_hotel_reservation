@@ -61,6 +61,7 @@ class hotel_completar_checkin(models.Model):
 		if self._context is None:
 			self._context = {}
 
+
 		keys = vals.keys()
 		_logger.info(vals)
 		if 'reservation_id' in keys:
@@ -68,14 +69,6 @@ class hotel_completar_checkin(models.Model):
 			room_reservation_line_id = self.env['hotel_reservation.line'].search([('line_id', '=', vals['reservation_id'])])
 			
 			if room_reservation_line_id:
-
-
-				for partner in self.env['hotel.reservation'].browse(vals['reservation_id']):
-
-					if partner.partner_id.es_menor:
-
-						raise ValidationError(_('La persona que esta como titular de la reserva es menor de edad'))
-
 
 				producto_id = self.env['product.template'].search([('name', '=', room_reservation_line_id.name)])
 

@@ -50,6 +50,7 @@ class hotel_reservation_inherit(models.Model):
 	fecha_salida = fields.Date('Fecha prevista de salida', required=True, store=True)
 	arriban_hoy = fields.Boolean(compute='_obtener_arriban_hoy', store=True, default=False)
 	adults=fields.Integer('Adultos',default=1)
+	es_menor= fields.Boolean('Menor de Edad', default=False)
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
@@ -219,6 +220,15 @@ class hotel_reservation_inherit(models.Model):
 			
 		vals['fecha_entrada'] = vals['checkin']
 		vals['fecha_salida'] = vals['checkout']
+
+		keys = vals.keys()
+		_logger.info(vals)
+		_logger.info('Estamos guardando el menor')
+		if 'partner_id' in keys:
+
+			partner_name_id = self.env['res.partner'].search([('id', '=', vals['partner_id'])]).es_menor
+			
+			vals['es_menor'] = partner_name_id
 
 		return super(hotel_reservation_inherit, self).create(vals)
 
