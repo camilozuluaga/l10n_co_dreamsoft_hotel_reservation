@@ -240,7 +240,7 @@ class hotel_reservation_inherit(models.Model):
 			partner_name_id = self.env['res.partner'].search([('id', '=', vals['partner_id'])]).es_menor
 			vals['es_menor'] = partner_name_id
 
-		return super(HotelReservationLine_inherit, self).write(vals)
+		return super(hotel_reservation_inherit, self).write(vals)
 
 
 	def name_room(self, list_reserva):
