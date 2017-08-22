@@ -370,6 +370,9 @@ class HotelReservationLine_inherit(models.Model):
 						for z in product_id:
 							room_ids =self.env['hotel.room'].search([('product_id', '=', z.id)])
 
+		_logger.info('Esto es lo de retornar room')
+		_logger.info(room_ids)
+
 		return room_ids
 
 	@api.multi

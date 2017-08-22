@@ -42,8 +42,6 @@ class quick_room_reservation_inherit(models.TransientModel):
 	fecha_entrada = fields.Date('Fecha Entrada', required=True)
 	fecha_salida = fields.Date('Fecha Salida', required=True)
 
-
-
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
 		dt_value = datetime.datetime.strptime(self.fecha_entrada, DEFAULT_SERVER_DATE_FORMAT) + datetime.timedelta(days=1)
@@ -57,6 +55,28 @@ class quick_room_reservation_inherit(models.TransientModel):
 		if self.fecha_salida:
 			fecha_salida = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
 			self.check_out = str(fecha_salida)
+
+	@api.onchange('partner_id')
+	def on_change_partner(self):
+		_logger.info('retornando')
+		_logger.info(self.room_id)
+		name_room=[]
+		room_reservation_ids = self.env['hotel.reservation'].search([('checkin', '>=', self.fecha_entrada), ('checkout', '<=', self.fecha_salida), ('state', '=', 'draft')])
+		if room_reservation_ids:
+			#buscamos la relacion en reservation line para obtener el nombre de la habitacion
+			for x in room_reservation_ids:
+				room_reservation_line_ids = self.env['hotel_reservation.line'].search([('line_id', '=', x.id)])
+				_logger.info(room_reservation_line_ids)
+
+				name_room.append(room_reservation_line_ids.name)
+
+			for x in name_room:
+				_logger.info(x)
+
+			room_reservation_id = self.env['hotel_reservation.line'].retornar_room_id(name_room)
+
+			for x in room_reservation_id:
+				_logger.info(x.id)
 
 
 	@api.model

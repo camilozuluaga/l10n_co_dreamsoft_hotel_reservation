@@ -53,17 +53,27 @@ class hotel_completar_checkin(models.Model):
 	si_envio_correo = fields.Boolean('Si')
 	no_envio_correo = fields.Boolean('No')
 	reservation_room = fields.Char('Room', readonly=True, store=False)
+	es_menor= fields.Boolean('Menor de Edad', default=False)
 
 	@api.model
 	def create(self, vals):
+		partner_id=''
 		if not vals:
 			vals = {}
-		if self._context is None:
-			self._context = {}
+
+		if self._context:
+			keys = self._context.keys()
+			if 'partner_id' in keys:
+				_logger.info('el paciente')
+				_logger.info(self._context['partner_id'])
+				partner_id = self._context['partner_id']
 
 
 		keys = vals.keys()
-		_logger.info(vals)
+
+		partner_name_id = self.env['res.partner'].search([('id', '=', partner_id)]).es_menor
+			
+		vals['es_menor'] = partner_name_id
 		if 'reservation_id' in keys:
 
 			room_reservation_line_id = self.env['hotel_reservation.line'].search([('line_id', '=', vals['reservation_id'])])
