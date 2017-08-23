@@ -19,7 +19,10 @@
         'views/dreamsoft_completar_checkin_relacion_view.xml',
         'views/dreamsoft_completar_checkin_view.xml',
         'data/data_tareas_programadas.xml',
+        'views/room_summ_view.xml',
     ],
-    'qweb': [],
+    'js': ['static/src/js/hotel_room_summary.js',],
+    'qweb': ['static/src/xml/hotel_room_summary.xml'],
+    'css': ['static/src/css/room_summary.css'],
     'installable': True,
 }
