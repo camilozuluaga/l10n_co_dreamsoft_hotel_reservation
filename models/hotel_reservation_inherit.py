@@ -183,11 +183,12 @@ class hotel_reservation_inherit(models.Model):
 		return True
 
 
-	@api.constrains('adults')
+	@api.constrains('adults', 'children')
 	def verificar_adultos(self):
 
-		if self.adults<=0:
-			raise except_orm(_('Warning'), _('Debe de haber como minimo un adulto'))
+		if self.children<=0:
+			if self.adults<=0:
+				raise except_orm(_('Warning'), _('Debe de haber como minimo un adulto'))
 
 
 
