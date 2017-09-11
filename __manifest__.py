@@ -20,6 +20,8 @@
         'views/dreamsoft_completar_checkin_view.xml',
         'data/data_tareas_programadas.xml',
         'views/room_summ_view.xml',
+        'report/report_reserva.xml',
+        'report/reservation_report.xml',
     ],
     'js': ['static/src/js/hotel_room_summary.js',],
     'qweb': ['static/src/xml/hotel_room_summary.xml'],

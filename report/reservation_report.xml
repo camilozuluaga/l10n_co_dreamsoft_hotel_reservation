@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+        <report 
+        id="report_reservation_id"
+        string="Tarjeta de Registro"
+        model="hotel.reservation"
+        report_type="qweb-pdf"
+        file="hotel_reservation.report_reservation_id"
+        name="hotel_reservation.report_reservation_id"
+        menu="True"
+        />
+    </data>
+</openerp>

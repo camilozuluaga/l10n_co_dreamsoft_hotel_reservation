@@ -8,6 +8,10 @@
 			<field name="inherit_id" ref="hotel_reservation.view_hotel_reservation_form"/>
 			<field name="arch" type="xml">
 
+		            <header>
+                    	<button string="Imprimir Reserva" name="print_report" type="object" class="oe_highlight"/>
+               		</header>	
+
 					<field name="checkin" position="attributes">
 						<attribute name="invisible">1</attribute>
 					</field>
@@ -78,7 +82,6 @@
 		                    </b>
 		                </div>
 		            </xpath>
-
 			</field>
 		</record>
 
