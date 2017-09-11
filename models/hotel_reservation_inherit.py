@@ -286,6 +286,11 @@ class hotel_reservation_inherit(models.Model):
 						Exceeded \n Please Select Rooms According to \
 						Members Accomodation.'))
 
+	@api.multi
+	def print_report(self):
+		_logger.info('Entro')
+		return self.env['report'].get_action(self,'hotel.reservation')
+
 class HotelReservationLine_inherit(models.Model):
 
 	_name = "hotel_reservation.line"

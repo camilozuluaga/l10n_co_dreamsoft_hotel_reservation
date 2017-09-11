@@ -1,46 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+	<data>
 
-        <template id="reporte_reserva" name="Reporte Reserva">
-          
-            <t t-call="report.external_layout">
+		<template id="hotel.reservation" name="Reporte Reserva">
+		  
+			<t t-call="report.external_layout">
 
-                <div class="page">
+				<div class="page">
 
-                    <p class="text-center"><h2> <strong>TARJETA DE REGISTRO / REGISTRATION CARD </strong> </h2></p>
+					<p class="text-center"><h2> <strong>TARJETA DE REGISTRO / REGISTRATION CARD </strong> </h2></p>
 
-                    <br/>
-                    <br/>
-                    <br/>
-                    <!-- class="table table-striped table-bordered table-condensed table-hover"-->
-                    <table border="1" class="table table-condensed">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Nombre Completo / First name and last name</th>
-                                <th class="text-center">Número / Number</th>
-                                <th class="text-center">De / From</th>
-                                <th class="text-center">Nacionalidad / Nationality</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr t-foreach="docs" t-as="datos">
-                                <td class="text-center"> <t t-esc="datos.partner_id.name"></t></td>
-                                <td class="text-center"> <t t-esc="datos.partner_id.xidentification"></t></td>
-                                <td class="text-center"> <t t-esc="datos.partner_id.departamento_del_ref_id.name"></t></td>
-                                <td class="text-center"> <t t-esc="datos.partner_id.pais_del_ref_id.name"></t></td>
-                            </tr>
+					<br/>
+					<br/>
+					<br/>
+					<!-- class="table table-striped table-bordered table-condensed table-hover"-->
+					<table border="1" class="table table-condensed">
+						<thead>
+							<tr>
+								<th class="text-center">Nombre Completo / First name and last name</th>
+								<th class="text-center">Número / Number</th>
+								<th class="text-center">De / From</th>
+								<th class="text-center">Nacionalidad / Nationality</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr t-foreach="docs" t-as="datos">
+								<td class="text-center"> <t t-esc="datos.partner_id.name"></t></td>
+								<td class="text-center"> <t t-esc="datos.partner_id.xidentification"></t></td>
+								<td class="text-center"> <t t-esc="datos.partner_id.departamento_del_ref_id.name"></t></td>
+								<td class="text-center"> <t t-esc="datos.partner_id.pais_del_ref_id.name"></t></td>
+							</tr>
 
-                            
+						</tbody>
+					</table>
 
-                        </tbody>
-                    </table>
-
-                </div>
-            </t>
-
+				</div>
+			</t>
+		</template>
 
 
-        </template>
-    </data>
+
+	</data>
 </openerp>
