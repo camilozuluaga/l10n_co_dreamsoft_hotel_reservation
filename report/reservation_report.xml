@@ -1,17 +1,14 @@
 <?xml version="1.0"?>
 <openerp>
-    
 	<data>
-
-        <report 
-        id="reporte_reserva_id"
-        string="Tarjeta de Registro"
-        model="hotel.reservation"
-        report_type="qweb-pdf"
-        file="hotel.reservation"
-        name="hotel.reservation"
-        menu="True"
-        />
-    
-</data>
+	        <report 
+	        id="reporte_reserva_id"
+	        string="Tarjeta de Registro"
+	        model="hotel.reservation"
+	        report_type="qweb-pdf"
+	        file="hotel.reservation"
+	        name="hotel.reservation"
+	        menu="False"
+	        />	    
+	</data>
 </openerp>

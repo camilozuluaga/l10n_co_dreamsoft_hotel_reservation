@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 
 		            <header>
-                    	<button string="Imprimir Reserva" name="print_report" type="object" class="oe_highlight"/>
+                    	<button string="Imprimir Reserva" name="print_report" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=',('done'))]}"/>
                		</header>	
 
 					<field name="checkin" position="attributes">
