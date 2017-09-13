@@ -74,6 +74,7 @@
 
 					<xpath expr="//field[@name='reservation_no']" position="after">
 		              <field name="es_menor" invisible="1"/>
+		              <field name="dreamsoft_checkin_id" invisible="1"/>
 						<div name="div_mensaje" class="oe_form_box_info oe_text_center" attrs="{'invisible': [('es_menor', '=', False)]}">
 		                    <b> 
 		                        <span class="oe_e">

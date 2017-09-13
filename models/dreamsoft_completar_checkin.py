@@ -54,7 +54,7 @@ class hotel_completar_checkin(models.Model):
 	no_envio_correo = fields.Boolean('No')
 	reservation_room = fields.Char('Room', readonly=True, store=False)
 	es_menor= fields.Boolean('Menor de Edad', default=False)
-	reserva_acompanantes_id= fields.One2many('hotel.reservation', 'dreamsoft_checkin_id', 'Reservas')
+
 
 	@api.model
 	def create(self, vals):
