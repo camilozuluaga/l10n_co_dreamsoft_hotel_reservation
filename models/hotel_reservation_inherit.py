@@ -21,7 +21,7 @@
 # ---------------------------------------------------------------------------
 
 import time
-import datetime
+from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import urllib2
 from odoo.exceptions import except_orm, ValidationError
@@ -55,12 +55,12 @@ class hotel_reservation_inherit(models.Model):
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
-		dt_value = datetime.datetime.now() - datetime.timedelta(hours=5)
+		dt_value = datetime.now() - timedelta(hours=5)
 		if self.fecha_entrada:
 			fecha_entrada = self.fecha_entrada+' '+self.env['room.reservation.summary'].consultar_registro_horario()[0]+':00' 
 			self.checkin = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_entrada)
 
-			fecha_salida_calculada = datetime.datetime.strptime(self.fecha_entrada, DEFAULT_SERVER_DATE_FORMAT) + datetime.timedelta(days=1)
+			fecha_salida_calculada = datetime.strptime(self.fecha_entrada, DEFAULT_SERVER_DATE_FORMAT) + timedelta(days=1)
 			self.fecha_salida = str(fecha_salida_calculada)
 			
 			if self.checkin[0:10] < str(dt_value)[0:10]:
@@ -71,7 +71,7 @@ class hotel_reservation_inherit(models.Model):
 	@api.onchange('fecha_salida')
 	def on_change_fecha_salida(self):
 
-		dt_value = datetime.datetime.now() - datetime.timedelta(hours=5)
+		dt_value = datetime.now() - timedelta(hours=5)
 		if self.fecha_salida:
 			fecha_salida = self.fecha_salida+' '+self.env['room.reservation.summary'].consultar_registro_horario()[1]+':00'
 			self.checkout = self.env['dreamsofft.hotel_config'].fecha_UTC(fecha_salida)
@@ -137,16 +137,17 @@ class hotel_reservation_inherit(models.Model):
 		room_obj = self.env['hotel.room']
 		for reservation in self:
 			folio_lines = []
-			checkin_date = reservation['checkin']
-			checkout_date = reservation['checkout']
+			checkin_date = datetime.strptime(str(reservation['checkin'][:10]), "%Y-%m-%d")
+			checkout_date = datetime.strptime(str(reservation['checkout'][:10]), "%Y-%m-%d")
+			duracion = int(str(checkout_date- checkin_date).split(' ')[0])
+			_logger.info(duracion)
+			_logger.info(type(duracion))
 			if not self.checkin < self.checkout:
 				raise except_orm(_('Error'),
 								 _('Checkout date should be greater \
 								 than the Checkin date.'))
-			duration_vals = (self.onchange_check_dates
-							 (checkin_date=checkin_date,
-							  checkout_date=checkout_date, duration=False))
-			duration = duration_vals.get('duration') or 0.0
+
+			duration = duracion
 			folio_vals = {
 				'date_order': reservation.date_order,
 				'warehouse_id': reservation.warehouse_id.id,
@@ -224,8 +225,6 @@ class hotel_reservation_inherit(models.Model):
 		vals['fecha_salida'] = vals['checkout']
 
 		keys = vals.keys()
-		_logger.info(vals)
-		_logger.info('Estamos guardando el menor')
 		if 'partner_id' in keys:
 
 			partner_name_id = self.env['res.partner'].search([('id', '=', vals['partner_id'])]).es_menor

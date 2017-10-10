@@ -56,48 +56,101 @@ class hotel_completar_checkin(models.Model):
 	es_menor= fields.Boolean('Menor de Edad', default=False)
 
 
+
+	""" 
+		Metodo que nos permite buscar el servicio para cada tipo de 
+		habitacion, para saber cuando tengamos la habitacion que servicio 
+		debemos de cargar
+	"""
+
+	def buscar_tipo_hab(self, tipo_habitacion):
+
+		if tipo_habitacion == 'Sencilla':
+			return 'Persona adicional Sencilla'
+		elif tipo_habitacion == 'Doble':
+			return 'Persona adicional Doble'
+		elif tipo_habitacion == 'Familiar':
+			return 'Persona adicional Familiar'
+
+	"""
+		metodo que nos permite buscar un producto, para buscar un producto por el nombre
+		se debe de buscar en la tabla product.template y despues buscar con el id del
+		producto template el id del producto que se estaba buscando
+	"""
+	def buscar_producto(self, nombre):
+		producto_tpml_id = self.env['product.template'].search([('name', '=', nombre)])
+		producto_id = self.env['product.product'].search([('product_tmpl_id', '=', producto_tpml_id.id)])
+		if producto_id:
+			return producto_id
+
+	def buscar_precio_producto(self, nombre):
+		producto_tpml_id = self.env['product.template'].search([('name', '=', nombre)])
+		if producto_tpml_id:
+			return producto_tpml_id.list_price
+
 	@api.model
 	def create(self, vals):
 		partner_id=''
+
 		if not vals:
+
 			vals = {}
 
 		if self._context:
+
 			keys = self._context.keys()
 			if 'partner_id' in keys:
-				_logger.info('el paciente')
-				_logger.info(self._context['partner_id'])
 				partner_id = self._context['partner_id']
 
 
 		keys = vals.keys()
 
 		partner_name_id = self.env['res.partner'].search([('id', '=', partner_id)]).es_menor
-			
 		vals['es_menor'] = partner_name_id
+
 		if 'reservation_id' in keys:
 
 			room_reservation_line_id = self.env['hotel_reservation.line'].search([('line_id', '=', vals['reservation_id'])])
 			
 			if room_reservation_line_id:
-
-				producto_id = self.env['product.template'].search([('name', '=', room_reservation_line_id.name)])
+				
+				producto_id = self.buscar_producto(room_reservation_line_id.name)
 
 				if producto_id:
-
-					room = self.env['hotel.room'].search([('product_id', '=', producto_id.id)])  
+					room = self.env['hotel.room'].search([('product_id', '=', producto_id.id)])
 
 					if room:
 
 						if ((len(vals['acompanantes_ids']) + 1) > room.capacity):
 
 							if room.additional_people:
-
+								
 								if ((len(vals['acompanantes_ids']) + 1) > (room.capacity + room.quantity_people)):
-
-									raise ValidationError(_('La capacidad no concuerda con la de la habitacion hay mas personas'))	
-							else:
 									raise ValidationError(_('La capacidad no concuerda con la de la habitacion hay mas personas'))
+
+								else:
+
+									if (len(vals['acompanantes_ids']) + 1) > room.capacity:
+										
+										servicios = []
+										numero_adicional = (len(vals['acompanantes_ids']) + 1) - room.capacity
+										folio_id = self.env['hotel.folio'].search([('reservation_id', '=', vals['reservation_id'])])
+										
+										tipo_habitacion = self.buscar_tipo_hab(room.categ_id.name)
+										producto_id = self.buscar_producto(tipo_habitacion)
+										precio_producto = self.buscar_precio_producto(tipo_habitacion)
+										unidad_medida = self.env['product.uom'].search([('name', '=', 'Unit(s)')])
+										dias_hospedado = self.calcular_dias(folio_id.checkin_date[0:10], folio_id.checkout_date[0:10])
+										_logger.info(unidad_medida)
+										for i in range(0,numero_adicional,1):
+
+											servicios.append((0,0,{'product_id' : producto_id.id, 'product_uom': 1,
+																	 'price_unit': precio_producto, 'product_uom_qty': dias_hospedado}))
+
+										folio_id.write({'service_lines': servicios})
+							
+							else:
+								raise ValidationError(_('La capacidad no concuerda con la de la habitacion hay mas personas'))
 
 		return super(hotel_completar_checkin, self).create(vals)
 
