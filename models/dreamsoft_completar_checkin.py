@@ -56,22 +56,6 @@ class hotel_completar_checkin(models.Model):
 	es_menor= fields.Boolean('Menor de Edad', default=False)
 
 
-
-	""" 
-		Metodo que nos permite buscar el servicio para cada tipo de 
-		habitacion, para saber cuando tengamos la habitacion que servicio 
-		debemos de cargar
-	"""
-
-	def buscar_tipo_hab(self, tipo_habitacion):
-
-		if tipo_habitacion == 'Sencilla':
-			return 'Persona adicional Sencilla'
-		elif tipo_habitacion == 'Doble':
-			return 'Persona adicional Doble'
-		elif tipo_habitacion == 'Familiar':
-			return 'Persona adicional Familiar'
-
 	"""
 		metodo que nos permite buscar un producto, para buscar un producto por el nombre
 		se debe de buscar en la tabla product.template y despues buscar con el id del
@@ -136,12 +120,15 @@ class hotel_completar_checkin(models.Model):
 										numero_adicional = (len(vals['acompanantes_ids']) + 1) - room.capacity
 										folio_id = self.env['hotel.folio'].search([('reservation_id', '=', vals['reservation_id'])])
 										
-										tipo_habitacion = self.buscar_tipo_hab(room.categ_id.name)
+										tipo_habitacion = room.servicio_persona_adicional.name	
 										producto_id = self.buscar_producto(tipo_habitacion)
 										precio_producto = self.buscar_precio_producto(tipo_habitacion)
-										unidad_medida = self.env['product.uom'].search([('name', '=', 'Unit(s)')])
 										dias_hospedado = self.calcular_dias(folio_id.checkin_date[0:10], folio_id.checkout_date[0:10])
-										_logger.info(unidad_medida)
+										
+
+										_logger.info(producto_id)
+										_logger.info(precio_producto)
+
 										for i in range(0,numero_adicional,1):
 
 											servicios.append((0,0,{'product_id' : producto_id.id, 'product_uom': 1,
