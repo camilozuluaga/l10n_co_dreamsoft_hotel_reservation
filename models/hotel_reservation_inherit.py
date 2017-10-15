@@ -52,6 +52,7 @@ class hotel_reservation_inherit(models.Model):
 	adults=fields.Integer('Adultos',default=1)
 	es_menor= fields.Boolean('Menor de Edad', default=False)
 	dreamsoft_checkin_id= fields.Many2one('dreamsoft.completar_checkin', 'Acompanantes')
+	acompanantes_ids = fields.One2many('dreamsoft.completar_checkin_relacion', 'relacion_completar_checkin_id', u'Acompañantes')
 
 	@api.onchange('fecha_entrada')
 	def on_change_fecha_entrada(self):
@@ -292,9 +293,16 @@ class hotel_reservation_inherit(models.Model):
 		_logger.info('Entro')
 		reservation_checkin= self.env['dreamsoft.completar_checkin'].search([('reservation_id', '=', self.ids[0])])
 		claves={}
+		_logger.info(self.acompanantes_ids)
 		_logger.info('Esto es lo que vamos a guardar')
 		_logger.info(reservation_checkin)
 		claves['dreamsoft_checkin_id']=reservation_checkin.id
+		_logger.info(reservation_checkin.acompanantes_ids.name.name)
+
+		for i in reservation_checkin.acompanantes_ids:
+			_logger.info(i.name.name)
+
+		claves['acompanantes_ids']=reservation_checkin.acompanantes_ids
 
 		super(hotel_reservation_inherit, self).write(claves)
 

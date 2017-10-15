@@ -72,6 +72,12 @@
 						<attribute name="String">Niños</attribute>
 					</xpath>
 
+					<xpath expr="//sheet/notebook//page[2]" position="after">
+ 						<page string='Acompañantes' attrs="{'invisible':[('state','!=',('done'))]}">
+							<field name='acompanantes_ids' string="Acompañantes" attrs="{'invisible':[('state','!=',('done'))]}"/>
+						</page>	
+					</xpath>
+
 					<xpath expr="//field[@name='reservation_no']" position="after">
 		              <field name="es_menor" invisible="1"/>
 		              <field name="dreamsoft_checkin_id" invisible="1"/>
